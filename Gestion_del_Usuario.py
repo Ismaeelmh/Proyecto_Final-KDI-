@@ -32,8 +32,11 @@ CORRECT_PASS = "proven2026"
 login_success = False
 message = ""
 
-#Variable para mantener sesión activa
+# Variable para mantener sesión activa
 session_active = False 
+
+## Botón de logout
+logout_rect = pygame.Rect(600, 550, 200, 50)
 
 running = True
 while running:
@@ -45,7 +48,16 @@ while running:
 
         # Click del ratón
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if 500 <= event.pos[0] <= 900 and 250 <= event.pos[1] <= 300:
+
+            ## Detectar click en logout
+            if session_active and logout_rect.collidepoint(event.pos):
+                session_active = False
+                login_success = False
+                input_user = ""
+                input_pass = ""
+                message = "Sesión cerrada"
+
+            elif 500 <= event.pos[0] <= 900 and 250 <= event.pos[1] <= 300:
                 active_user = True
                 active_pass = False
             elif 500 <= event.pos[0] <= 900 and 350 <= event.pos[1] <= 400:
@@ -62,7 +74,7 @@ while running:
             if event.key == pygame.K_RETURN:
                 if input_user == CORRECT_USER and input_pass == CORRECT_PASS:
                     login_success = True
-                    session_active = True #activamos la sesión
+                    session_active = True
                     message = "Login correcto"
                 else:
                     login_success = False
@@ -86,26 +98,33 @@ while running:
                     login_success = False
                     message = ""
 
-#Mensaje y desactivar cajas si la sesión está activa
+    # Mensaje y desactivar cajas si la sesión está activa
     if session_active:
         message = f"¡Sesión activa! Bienvenido {CORRECT_USER}"
         active_user = False
         active_pass = False
 
-    # Dibujar cajas
-    pygame.draw.rect(screen, Gris, (475, 250, 250, 50))
-    pygame.draw.rect(screen, Gris, (520, 350, 250, 50))
+    ## Solo permitir inputs si NO hay sesión activa
+    if not session_active:
+        # Dibujar cajas
+        pygame.draw.rect(screen, Gris, (475, 250, 250, 50))
+        pygame.draw.rect(screen, Gris, (520, 350, 250, 50))
 
-    # Texto dentro de las cajas
-    user_text = Font.render(input_user, True, Negro)
-    pass_text = Font.render("*" * len(input_pass), True, Negro)
+        # Texto dentro de las cajas
+        user_text = Font.render(input_user, True, Negro)
+        pass_text = Font.render("*" * len(input_pass), True, Negro)
 
-    screen.blit(user_text, (480, 260))
-    screen.blit(pass_text, (522, 360))
+        screen.blit(user_text, (480, 260))
+        screen.blit(pass_text, (522, 360))
 
-    # Etiquetas
-    screen.blit(Font.render("Usuario:", True, Negro), (350, 260))
-    screen.blit(Font.render("Contraseña:", True, Negro), (350, 360))
+        # Etiquetas
+        screen.blit(Font.render("Usuario:", True, Negro), (350, 260))
+        screen.blit(Font.render("Contraseña:", True, Negro), (350, 360))
+
+    ## Dibujar botón logout cuando sesión activa
+    if session_active:
+        pygame.draw.rect(screen, Rojo, logout_rect)
+        screen.blit(Font.render("Cerrar sesión", True, Blanco), (610, 560))
 
     # Mensaje
     color_msg = Verde if login_success else Rojo
