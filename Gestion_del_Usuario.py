@@ -32,6 +32,9 @@ CORRECT_PASS = "proven2026"
 login_success = False
 message = ""
 
+#Variable para mantener sesión activa
+session_active = False 
+
 running = True
 while running:
     screen.fill(Blanco)
@@ -59,6 +62,7 @@ while running:
             if event.key == pygame.K_RETURN:
                 if input_user == CORRECT_USER and input_pass == CORRECT_PASS:
                     login_success = True
+                    session_active = True #activamos la sesión
                     message = "Login correcto"
                 else:
                     login_success = False
@@ -81,6 +85,12 @@ while running:
                     input_pass += event.unicode
                     login_success = False
                     message = ""
+
+#Mensaje y desactivar cajas si la sesión está activa
+    if session_active:
+        message = f"¡Sesión activa! Bienvenido {CORRECT_USER}"
+        active_user = False
+        active_pass = False
 
     # Dibujar cajas
     pygame.draw.rect(screen, Gris, (475, 250, 250, 50))
