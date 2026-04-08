@@ -76,6 +76,9 @@ while running:
                     login_success = True
                     session_active = True
                     message = "Login correcto"
+                    with open("user.txt", "w") as f:
+                        f.write(input_user)
+
                 else:
                     login_success = False
                     message = "Usuario o contraseña incorrectos"
