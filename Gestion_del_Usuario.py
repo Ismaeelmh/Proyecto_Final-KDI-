@@ -25,8 +25,8 @@ active_user = False
 active_pass = False
 
 # Credenciales
-CORRECT_USER = "buscaminas"
-CORRECT_PASS = "proven2026"
+CORRECT_USER= "buscaminas"
+CORRECT_PASS = "buscaminas123"
 
 # Estado
 login_success = False
@@ -100,7 +100,7 @@ while running:
 
     # Mensaje y desactivar cajas si la sesión está activa
     if session_active:
-        message = f"¡Sesión activa! Bienvenido {CORRECT_USER}"
+        message = f"¡Bienvenido {CORRECT_USER}!"
         active_user = False
         active_pass = False
 
