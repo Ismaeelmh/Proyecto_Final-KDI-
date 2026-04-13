@@ -28,6 +28,9 @@ button_font = pygame.font.SysFont("Arial", 25)
 reinciar_botton = pygame.Rect(520, 12, 110, 35)
 salir_botton = pygame.Rect(610, 12, 90, 35)
 
+# Resultados
+game_over = False
+game_result = ""  # "Ganaste" or "Perdiste"
 
 # Data del Juego 
 score = 0
