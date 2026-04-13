@@ -2,13 +2,17 @@ import pygame
 import sys
 import time
 
-# Inicializar pygame
 pygame.init()
 
-# Configuración de la ventana
-WIDTH, HEIGHT = 680, 700
+# Configuración
+WIDTH = 680
 ROWS, COLS = 8, 8
+
+TOP_BAR = 50
+BOTTOM_BAR = 50
+
 CELL_SIZE = WIDTH // COLS
+HEIGHT = TOP_BAR + (CELL_SIZE * ROWS) + BOTTOM_BAR
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Buscaminas")
@@ -19,24 +23,22 @@ GRAY = (144, 238, 144)
 DARK_GRAY = (34, 139, 34)
 BLACK = (0, 100, 0)
 
-# Fuente
+# Fuentes
 font = pygame.font.SysFont("Arial", 25)
 button_font = pygame.font.SysFont("Arial", 25)
-result_font = pygame.font.SysFont("Arial", 30)
+result_font = pygame.font.SysFont("Arial", 28)
 
 # Botones
 reinciar_botton = pygame.Rect(520, 12, 110, 35)
 salir_botton = pygame.Rect(610, 12, 90, 35)
 
-# Data del Juego
+# Data
 score = 0
 start_time = time.time()
 elapsed_time = 0
 
-# Resultado
-result_text_value = "Resultado: -"
+result_text_value = "Resultado:"
 
-# Usuario desde login
 def get_user():
     try:
         with open("user.txt", "r") as f:
@@ -48,8 +50,8 @@ player_name = get_user()
 
 
 def draw_ui():
-    ui_rect = pygame.Rect(0, 0, WIDTH, 50)
-    pygame.draw.rect(screen, DARK_GRAY, ui_rect)
+    # Top bar
+    pygame.draw.rect(screen, DARK_GRAY, (0, 0, WIDTH, TOP_BAR))
 
     name_text = font.render(f"Jugador: {player_name}", True, WHITE)
     time_text = font.render(f"Tiempo: {elapsed_time}s", True, WHITE)
@@ -58,36 +60,32 @@ def draw_ui():
     pygame.draw.rect(screen, BLACK, reinciar_botton)
     pygame.draw.rect(screen, BLACK, salir_botton)
 
-    reinciar_text = button_font.render("Reiniciar", True, WHITE)
-    salir_text = button_font.render("Salir", True, WHITE)
-
-    screen.blit(reinciar_text, (reinciar_botton.x + 5, reinciar_botton.y + 5))
-    screen.blit(salir_text, (salir_botton.x + 15, salir_botton.y + 5))
+    screen.blit(button_font.render("Reiniciar", True, WHITE), (525, 15))
+    screen.blit(button_font.render("Salir", True, WHITE), (625, 15))
 
     screen.blit(name_text, (6, 10))
-    screen.blit(time_text, (253, 10))
-    screen.blit(score_text, (398, 10))
+    screen.blit(time_text, (250, 10))
+    screen.blit(score_text, (400, 10))
+
+    # Bottom bar
+    pygame.draw.rect(screen, DARK_GRAY, (0, HEIGHT - BOTTOM_BAR, WIDTH, BOTTOM_BAR))
+
+    result_text = result_font.render(result_text_value, True, WHITE)
+    rect = result_text.get_rect(center=(WIDTH // 2, HEIGHT - 25))
+    screen.blit(result_text, rect)
 
 
 def draw_grid():
     for row in range(ROWS):
         for col in range(COLS):
             x = col * CELL_SIZE
-            y = row * CELL_SIZE + 50
+            y = row * CELL_SIZE + TOP_BAR
 
             rect = pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
             pygame.draw.rect(screen, WHITE, rect)
             pygame.draw.rect(screen, BLACK, rect, 2)
 
 
-# ✅ Dibujar resultado abajo
-def draw_result_text():
-    text = result_font.render(result_text_value, True, WHITE)
-    text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT - 30))
-    screen.blit(text, text_rect)
-
-
-# Reiniciar juego
 def reset_game():
     global score, start_time, result_text_value
     score = 0
@@ -95,7 +93,6 @@ def reset_game():
     result_text_value = "Resultado: Reiniciado"
 
 
-# Bucle principal
 running = True
 while running:
     screen.fill(GRAY)
@@ -113,12 +110,10 @@ while running:
             if salir_botton.collidepoint(mouse_pos):
                 running = False
 
-    # Tiempo
     elapsed_time = int(time.time() - start_time)
 
     draw_ui()
     draw_grid()
-    draw_result_text()  # 👈 aquí se dibuja el resultado
 
     pygame.display.update()
 
