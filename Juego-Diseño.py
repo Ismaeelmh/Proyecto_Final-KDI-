@@ -58,7 +58,7 @@ player_name = get_user()
 
 # Dibujar interfaz (barra superior e inferior)
 def draw_ui():
-    # 🔝 Barra superior
+    # Barra superior
     pygame.draw.rect(screen, DARK_GRAY, (0, 0, WIDTH, TOP_BAR))
 
     name_text = font.render(f"Jugador: {player_name}", True, WHITE)
@@ -77,7 +77,7 @@ def draw_ui():
     screen.blit(time_text, (250, 10))
     screen.blit(score_text, (400, 10))
 
-    # 🔻 Barra inferior (Resultado)
+    # Barra inferior (Resultado)
     pygame.draw.rect(screen, DARK_GRAY, (0, HEIGHT - BOTTOM_BAR, WIDTH, BOTTOM_BAR))
 
     result_text = result_font.render(result_text_value, True, WHITE)
