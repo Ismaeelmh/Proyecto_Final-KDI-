@@ -45,6 +45,9 @@ elapsed_time = 0
 # Texto de resultado
 result_text_value = "Resultado:"
 
+# Estado de celdas (False = oculta, True = descubierta)
+grid_state = [[False for _ in range(COLS)] for _ in range(ROWS)]
+
 # Obtener usuario desde archivo de login
 def get_user():
     try:
@@ -93,8 +96,13 @@ def draw_grid():
             y = row * CELL_SIZE + TOP_BAR
 
             rect = pygame.Rect(x, y, CELL_SIZE, CELL_SIZE)
-            pygame.draw.rect(screen, WHITE, rect)
-            pygame.draw.rect(screen, BLACK, rect, 2)
+
+            if grid_state[row][col]:
+                pygame.draw.rect(screen, GRAY, rect)  # Celda descubierta
+            else:
+                pygame.draw.rect(screen, WHITE, rect)  # Celda oculta
+
+            pygame.draw.rect(screen, BLACK, rect, 2)  # Borde
 
 
 # Reiniciar el juego
@@ -103,6 +111,9 @@ def reset_game():
     score = 0
     start_time = time.time()
     result_text_value = "Resultado: Reiniciado"
+    
+    # Reiniciar todas las celdas
+    grid_state = [[False for _ in range(COLS)] for _ in range(ROWS)]
 
 
 # Bucle principal
@@ -125,6 +136,19 @@ while running:
             # Botón salir
             if salir_botton.collidepoint(mouse_pos):
                 running = False
+            # Clic izquierdo para descubrir celda
+            if event.button == 1:
+                mouse_x, mouse_y = mouse_pos
+
+                # Verificar que el clic esté dentro del grid (no en barras)
+                if TOP_BAR <= mouse_y <= HEIGHT - BOTTOM_BAR:
+                    col = mouse_x // CELL_SIZE
+                    row = (mouse_y - TOP_BAR) // CELL_SIZE
+
+                    # Evitar errores de rango
+                    if 0 <= row < ROWS and 0 <= col < COLS:
+                        grid_state[row][col] = True  # Descubrir celda
+                        result_text_value = f"Celda ({row},{col}) descubierta"
 
     # Actualizar tiempo
     elapsed_time = int(time.time() - start_time)
