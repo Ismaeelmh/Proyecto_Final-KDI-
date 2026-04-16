@@ -36,7 +36,9 @@ class Button:
         if self.rect.collidepoint(mouse_pos):  # Si el ratón está encima
             color = DARK_GRAY  # Cambia color
 
-        pygame.draw.rect(screen, color, self.rect)  # Dibuja botón
+        pygame.draw.rect(screen, color, self.rect, border_radius=10)  # Botón con bordes redondeados
+        pygame.draw.rect(screen, WHITE, self.rect, 2, border_radius=10)  # Borde blanco
+
 
         text_surf = button_font.render(self.text, True, WHITE)  # Renderiza texto
         text_rect = text_surf.get_rect(center=self.rect.center)  # Centra texto
