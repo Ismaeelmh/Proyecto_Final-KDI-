@@ -1,64 +1,32 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request  # added request
 
-app = Flask("Juegos")
+app = Flask("juegos ")  # Create Flask app
 
+# Root route to test server
 @app.route('/')
 def home():
     return jsonify({
-        "mensaje": "API de juegos funcionando"
+        "message": "Bienvenido el juegos"
     })
 
-@app.route('/api/saludo', methods=['GET'])
-def juegos():
-    return jsonify({
-        "juegos": "Hola, esta es una API básica con Flask"
-    })
+# POST /registro endpoint
+@app.route('/registro', methods=['POST'])
+def registro():
 
-@app.route('/api/sumar', methods=['POST'])
-def sumar():
+    # Get JSON data from request
     data = request.get_json()
 
-    num1 = data.get("num1", 0)
-    num2 = data.get("num2", 0)
+    # Simple simulated user creation
+    user = {
+        "name": data["name"],
+        "email": data["email"]
+    }
 
     return jsonify({
-        "resultado": num1 + num2
-    })
+        "message": "Usuario registrado correctamente",
+        "user": user
+    }), 201
 
-@app.route('/registro', methods=['GET'])
-def registro_form():
-    return """
-    <h2>Registro</h2>
-
-    <form action="/api/registro" method="post">
-        <label>Email:</label><br>
-        <input type="email" name="email"><br><br>
-
-        <label>Username:</label><br>
-        <input type="username" name="username"><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
-
-        <button type="submit">Enviar</button>
-    </form>
-    """
-@app.route('/login', methods=['GET'])
-def login_form():
-    return """
-    <h2>login</h2>
-
-    <form action="/api/login" method="post">
-        <label>Username:</label><br>
-        <input type="username" name="username"><br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password"><br><br>
-
-        <button type="submit">Enviar</button>
-    </form>
-    """
+# Run server in debug mode
 if __name__ == '__main__':
     app.run(debug=True)
-
-
