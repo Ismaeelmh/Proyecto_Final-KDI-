@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 
 app = Flask("juegos")
+app.config['JSON_AS_ASCII'] = False  # Mostrar caracteres especiales correctamente
 
 # Simulación de usuarios (más adelante esto vendrá de la BD)
 users = [
@@ -60,6 +61,48 @@ def login():
         "message": "Email o contraseña incorrectos"
     }), 401
 
+# PROFILE
+@app.route('/profile', methods=['POST'])
+def profile():
+    data = request.get_json()
+
+    email = data.get("email")
+
+    # Buscar usuario por email
+    user_found = None
+    for user in users:
+        if user["email"] == email:
+            user_found = user
+            break
+
+    if user_found:
+        return jsonify({
+            "message": "Perfil encontrado",
+            "profile": {
+                "name": user_found["name"],
+                "email": user_found["email"]
+            }
+        }), 200
+
+    return jsonify({
+        "message": "Usuario no encontrado"
+    }), 404
+
+# MENU
+@app.route('/menu', methods=['GET'])
+def menu():
+
+    menu_options = [
+        "Iniciar Juego",
+        "Perfil",
+        "Configuración",
+        "Cerrar Sesión"
+    ]
+
+    return jsonify({
+        "message": "Menú principal",
+        "options": menu_options
+    }), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
