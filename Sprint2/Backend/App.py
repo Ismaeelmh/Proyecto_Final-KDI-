@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 
 app = Flask("juegos")
 app.config['JSON_AS_ASCII'] = False  # Mostrar caracteres especiales correctamente
+from werkzeug.security import generate_password_hash, check_password_hash
 
 import mysql.connector
 db = mysql.connector.connect( 
@@ -37,23 +38,23 @@ def register():
         "email": data["email"]
     }
 
-    #password_hash = generate_password_hash(password)
+    password_hash = generate_password_hash(password)
    
-    #conexion = conexion_sql()
-    #cursor = conexion.cursor()
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
 
 
-    #query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
 
 
-    #valores = (username, email, password_hash)
+    valores = (username, email, password_hash)
    
-    #cursor.execute(query, valores)
+    cursor.execute(query, valores)
 
 
-    #conexion.commit()
-    #cursor.close()
-    #conexion.close()
+    conexion.commit()
+    cursor.close()
+    conexion.close()
     return jsonify({
         "message": "Usuario registrado correctamente",
         "user": user
@@ -76,23 +77,23 @@ def login():
             user_found = user
             break
     
-    #password_hash = generate_password_hash(password)
+    password_hash = generate_password_hash(password)
    
-    #conexion = conexion_sql()
-    #cursor = conexion.cursor()
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
 
 
-    #query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
 
 
-    #valores = (username, email, password_hash)
+    valores = (username, email, password_hash)
    
-    #cursor.execute(query, valores)
+    cursor.execute(query, valores)
 
 
-    #conexion.commit()
-    #cursor.close()
-    #conexion.close()
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
     if user_found:
         return jsonify({
@@ -143,23 +144,24 @@ def menu():
         "Perfil",
         "Cerrar Sesión"
     ]
-    #password_hash = generate_password_hash(password)
+    
+    password_hash = generate_password_hash(password)
    
-    #conexion = conexion_sql()
-    #cursor = conexion.cursor()
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
 
 
-    #query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
 
 
-    #valores = (username, email, password_hash)
+    valores = (username, email, password_hash)
    
-    #cursor.execute(query, valores)
+    cursor.execute(query, valores)
 
 
-    #conexion.commit()
-    #cursor.close()
-    #conexion.close()
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
     return jsonify({
         "message": "Menú principal",
