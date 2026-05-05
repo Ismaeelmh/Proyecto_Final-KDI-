@@ -4,7 +4,6 @@ app = Flask("juegos")
 app.config['JSON_AS_ASCII'] = False  # Mostrar caracteres especiales correctamente
 
 
-
 # Simulación de usuarios (más adelante esto vendrá de la BD)
 users = [
     {
@@ -29,10 +28,28 @@ def register():
         "email": data["email"]
     }
 
+    password_hash = generate_password_hash(password)
+   
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
+
+
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+
+
+    valores = (username, email, password_hash)
+   
+    cursor.execute(query, valores)
+
+
+    conexion.commit()
+    cursor.close()
+    conexion.close()
     return jsonify({
         "message": "Usuario registrado correctamente",
         "user": user
     }), 201
+
 
 
 # LOGIN
@@ -49,6 +66,24 @@ def login():
         if user["email"] == email and user["password"] == password:
             user_found = user
             break
+    
+    password_hash = generate_password_hash(password)
+   
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
+
+
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+
+
+    valores = (username, email, password_hash)
+   
+    cursor.execute(query, valores)
+
+
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
     if user_found:
         return jsonify({
@@ -99,6 +134,23 @@ def menu():
         "Perfil",
         "Cerrar Sesión"
     ]
+    password_hash = generate_password_hash(password)
+   
+    conexion = conexion_sql()
+    cursor = conexion.cursor()
+
+
+    query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
+
+
+    valores = (username, email, password_hash)
+   
+    cursor.execute(query, valores)
+
+
+    conexion.commit()
+    cursor.close()
+    conexion.close()
 
     return jsonify({
         "message": "Menú principal",
