@@ -1,65 +1,57 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
+from werkzeug.security import generate_password_hash
+import mysql.connector
 
 app = Flask("juegos")
-app.config['JSON_AS_ASCII'] = False  # Mostrar caracteres especiales correctamente
-from werkzeug.security import generate_password_hash, check_password_hash
+CORS(app)
 
-import mysql.connector
-db = mysql.connector.connect( 
-    host="ec2-3-237-88-87.compute-1.amazonaws.com", 
-    user="visualcode", 
-    password="saguacate", 
-    database="saguacate", 
-    port=3306 ) 
+db = mysql.connector.connect(
+    host="ec2-3-237-88-87.compute-1.amazonaws.com",
+    user="visualcode",
+    password="saguacate",
+    database="saguacate",
+    port=3306
+)
 
-cursor = db.cursor()
 print("Conexión MySQL AWS exitosa")
-# Simulación de usuarios (más adelante esto vendrá de la BD)
-users = [
-    {
-        "email": "juan@gmail.com",
-        "password": "1234",
-        "name": "Juan"
-    }
-]
+
 
 @app.route('/')
 def home():
-    return jsonify({
-        "message": "Bienvenido a juegos"
-    })
+    return jsonify({"message": "Bienvenido a juegos"})
 
-@app.route('/register', methods=['POST'])
+
+@app.route('/registro', methods=['POST'])
 def register():
     data = request.get_json()
 
-    user = {
-        "name": data["name"],
-        "email": data["email"]
-    }
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+
+    if not username or not email or not password:
+        return jsonify({"error": "Faltan datos"}), 400
 
     password_hash = generate_password_hash(password)
-   
-    conexion = conexion_sql()
-    cursor = conexion.cursor()
 
+    cursor = db.cursor()
 
     query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
-
-
     valores = (username, email, password_hash)
-   
+
     cursor.execute(query, valores)
+    db.commit()
 
-
-    conexion.commit()
     cursor.close()
-    conexion.close()
+
     return jsonify({
         "message": "Usuario registrado correctamente",
-        "user": user
+        "user": {
+            "username": username,
+            "email": email
+        }
     }), 201
-
 
 
 # LOGIN
