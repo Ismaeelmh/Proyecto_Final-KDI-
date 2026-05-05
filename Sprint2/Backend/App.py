@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 app = Flask("juegos")
 app.config['JSON_AS_ASCII'] = False  # Mostrar caracteres especiales correctamente
 
+
+
 # Simulación de usuarios (más adelante esto vendrá de la BD)
 users = [
     {
@@ -95,14 +97,13 @@ def menu():
     menu_options = [
         "Iniciar Juego",
         "Perfil",
-        "Configuración",
         "Cerrar Sesión"
     ]
 
     return jsonify({
         "message": "Menú principal",
         "options": menu_options
-    }), 200
+    }), 200 
 
 if __name__ == '__main__':
     app.run(debug=True)
