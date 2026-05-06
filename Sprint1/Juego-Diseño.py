@@ -21,7 +21,7 @@ pygame.display.set_caption("Buscaminas")
 # Colores
 WHITE = (245, 255, 245)
 GRAY = (144, 238, 144)
-DARK_GRAY = (34, 139, 34)
+DARK_GRAY = (34, 139, 34)   
 BLACK = (0, 100, 0)
 
 # Fuentes
@@ -39,6 +39,8 @@ start_time = time.time()
 elapsed_time = 0
 
 result_text_value = "Resultado:"
+
+game_over = False  # NEW
 
 # Estado de celdas
 grid_state = [[False for _ in range(COLS)] for _ in range(ROWS)]
@@ -93,6 +95,30 @@ def get_user():
 
 player_name = get_user()
 
+# NEW - revelar celdas vacías
+def reveal_empty(row, col):
+    if row < 0 or row >= ROWS or col < 0 or col >= COLS:
+        return
+
+    if grid_state[row][col] or flag_state[row][col]:
+        return
+
+    grid_state[row][col] = True
+
+    if board[row][col] == 0:
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                if dr != 0 or dc != 0:
+                    reveal_empty(row + dr, col + dc)
+
+# NEW - comprobar victoria
+def check_win():
+    for r in range(ROWS):
+        for c in range(COLS):
+            if board[r][c] != -1 and not grid_state[r][c]:
+                return False
+    return True
+
 
 # UI
 def draw_ui():
@@ -136,7 +162,8 @@ def draw_grid():
                     pygame.draw.circle(screen, BLACK, rect.center, 10)
                 elif board[row][col] > 0:
                     text = font.render(str(board[row][col]), True, BLACK)
-                    screen.blit(text, (x + 30, y + 20))
+                    text_rect = text.get_rect(center=rect.center)
+                    screen.blit(text, text_rect)
             else:
                 pygame.draw.rect(screen, WHITE, rect)
 
@@ -149,11 +176,12 @@ def draw_grid():
 
 # Reiniciar
 def reset_game():
-    global score, start_time, result_text_value, grid_state, flag_state, board  
+    global score, start_time, result_text_value, grid_state, flag_state, board, game_over  # NEW  
 
     score = 0
     start_time = time.time()
     result_text_value = "Resultado:"
+    game_over = False  # NEW
 
     grid_state = [[False for _ in range(COLS)] for _ in range(ROWS)]
     flag_state = [[False for _ in range(COLS)] for _ in range(ROWS)]
@@ -181,32 +209,50 @@ while running:
             if salir_botton.collidepoint(mouse_pos):
                 running = False
 
-            # CLIC IZQUIERDO
-            if event.button == 1:
-                mouse_x, mouse_y = mouse_pos
+            if not game_over:  # NEW
 
-                if TOP_BAR <= mouse_y <= HEIGHT - BOTTOM_BAR:
-                    col = mouse_x // CELL_SIZE
-                    row = (mouse_y - TOP_BAR) // CELL_SIZE
+                # CLIC IZQUIERDO
+                if event.button == 1:
+                    mouse_x, mouse_y = mouse_pos
 
-                    if 0 <= row < ROWS and 0 <= col < COLS:
-                        if not flag_state[row][col]:
-                            grid_state[row][col] = True
-                            result_text_value = f"Celda ({row},{col}) descubierta"
+                    if TOP_BAR <= mouse_y <= HEIGHT - BOTTOM_BAR:
+                        col = mouse_x // CELL_SIZE
+                        row = (mouse_y - TOP_BAR) // CELL_SIZE
 
-            # CLIC DERECHO (banderas)
-            if event.button == 3:
-                mouse_x, mouse_y = mouse_pos
+                        if 0 <= row < ROWS and 0 <= col < COLS:
+                            if not flag_state[row][col]:
 
-                if TOP_BAR <= mouse_y <= HEIGHT - BOTTOM_BAR:
-                    col = mouse_x // CELL_SIZE
-                    row = (mouse_y - TOP_BAR) // CELL_SIZE
+                                if board[row][col] == -1:
+                                    result_text_value = "¡Perdiste!"
+                                    game_over = True  # NEW
 
-                    if 0 <= row < ROWS and 0 <= col < COLS:
-                        flag_state[row][col] = not flag_state[row][col]
-                        result_text_value = f"Bandera en ({row},{col})"
+                                    for r in range(ROWS):
+                                        for c in range(COLS):
+                                            if board[r][c] == -1:
+                                                grid_state[r][c] = True
+
+                                elif board[row][col] == 0:
+                                    reveal_empty(row, col)
+                                else:
+                                    grid_state[row][col] = True
+
+                # CLIC DERECHO (banderas)
+                if event.button == 3:
+                    mouse_x, mouse_y = mouse_pos
+
+                    if TOP_BAR <= mouse_y <= HEIGHT - BOTTOM_BAR:
+                        col = mouse_x // CELL_SIZE
+                        row = (mouse_y - TOP_BAR) // CELL_SIZE
+
+                        if 0 <= row < ROWS and 0 <= col < COLS:
+                            if not grid_state[row][col]:
+                                flag_state[row][col] = not flag_state[row][col]
 
     elapsed_time = int(time.time() - start_time)
+
+    if not game_over and check_win():  # NEW
+        result_text_value = "¡Ganaste!"
+        game_over = True  # NEW
 
     draw_ui()
     draw_grid()
