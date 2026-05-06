@@ -13,6 +13,27 @@
     <button onclick="login()">Iniciar sesión</button>
 </body>
 <script>
-    
+function login() {
+    const data = {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    fetch("http://127.0.0.1:5000/registro", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        alert(res.message || res.error);
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
 </script>
 </html>

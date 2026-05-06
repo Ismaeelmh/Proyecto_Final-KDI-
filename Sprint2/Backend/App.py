@@ -58,20 +58,19 @@ def register():
 # LOGIN
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()  # Obtener datos enviados
+    data = request.get_json()
 
-    email = data.get("email")
+    username = data.get("username")
     password = data.get("password")
 
-    cursor = db.cursor(dictionary=True)  # Cursor tipo diccionario
+    cursor = db.cursor(dictionary=True)
    
-    query = "SELECT * FROM usuarios WHERE email = %s"
-    cursor.execute(query, (email,))
+    query = "SELECT * FROM usuarios WHERE username = %s"
+    cursor.execute(query, (username,))
     
-    user_found = cursor.fetchone()  # Buscar usuario
+    user_found = cursor.fetchone()
     cursor.close()
 
-    # Verificar contraseña
     if user_found and check_password_hash(user_found["password_hash"], password):
         return jsonify({
             "message": "Login correcto",
@@ -82,7 +81,7 @@ def login():
         }), 200
 
     return jsonify({
-        "message": "Email o contraseña incorrectos"
+        "message": "Usuario o contraseña incorrectos"
     }), 401
 
 
