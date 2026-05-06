@@ -7,7 +7,7 @@ app = Flask("juegos")
 CORS(app)
 
 db = mysql.connector.connect(
-    host="ec2-3-237-88-87.compute-1.amazonaws.com",
+    host="ec2-100-54-36-99.compute-1.amazonaws.com",
     user="visualcode",
     password="saguacate",
     database="saguacate",
