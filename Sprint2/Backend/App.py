@@ -8,7 +8,7 @@ CORS(app)  # Activar CORS
 
 # Conexión con MySQL en servidor EC2
 db = mysql.connector.connect(
-    host="ec2-100-54-36-99.compute-1.amazonaws.com",
+    host="ec2-3-210-183-89.compute-1.amazonaws.com",
     user="visualcode",
     password="saguacate",
     database="saguacate",
