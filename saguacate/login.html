@@ -28,7 +28,15 @@ function login() {
     })
     .then(res => res.json())
     .then(res => {
-        alert(res.message || res.error);
+    if (res.error) {
+        alert(res.error);
+    } else {
+        alert(res.message || "Login correcto");
+        window.location.href = "menu.html";
+    }
+})
+    }
+})
     })
     .catch(err => {
         console.error(err);
