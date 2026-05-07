@@ -30,7 +30,7 @@ def home():
 # REGISTRO
 @app.route('/registro', methods=['POST'])
 def register():
-    data = request.get_json()
+    data = request.get_json()  # Obtener datos enviados
 
     username = data.get("username")
     email = data.get("email")
@@ -40,25 +40,15 @@ def register():
     if not username or not email or not password:
         return jsonify({"error": "Faltan datos"}), 400
 
-    cursor = db.cursor(dictionary=True)
+    password_hash = generate_password_hash(password)  # Encriptar contraseña
 
-#VERIFICAR SI EL USUARIO O EMAIL YA EXISTE EN LA BASE DE DATOS 
-    cursor.execute(query, (email, username))
-    existing_user = cursor.fetchone()
-
-    if existing_user:
-        cursor.close()
-        return jsonify({"error": "Usuario o email ya existe"}), 409
-
-    # Encriptar contraseña
-    password_hash = generate_password_hash(password)
-
-    # Insertar usuario
+    cursor = db.cursor()  # Crear cursor SQL
     query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
-    cursor.execute(query, (username, email, password_hash))
+    valores = (username, email, password_hash)
 
-    db.commit()
-    cursor.close()
+    cursor.execute(query, valores)  # Ejecutar inserción
+    db.commit()  # Guardar cambios
+    cursor.close()  # Cerrar cursor
 
     return jsonify({
         "message": "Usuario registrado correctamente",
