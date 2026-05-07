@@ -1,10 +1,14 @@
-from flask import Flask, jsonify, request  # Importar Flask y utilidades JSON
+from flask import Flask, jsonify, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
 
 app = Flask("juegos")  # Crear aplicación Flask
 CORS(app)  # Activar CORS
+
+
+app.secret_key = "saguacate" # Clave secreta para sesiones
+
 
 # Conexión con MySQL en servidor EC2
 db = mysql.connector.connect(
@@ -26,7 +30,7 @@ def home():
 # REGISTRO
 @app.route('/registro', methods=['POST'])
 def register():
-    data = request.get_json()  # Obtener datos enviados
+    data = request.get_json()
 
     username = data.get("username")
     email = data.get("email")
@@ -36,15 +40,25 @@ def register():
     if not username or not email or not password:
         return jsonify({"error": "Faltan datos"}), 400
 
-    password_hash = generate_password_hash(password)  # Encriptar contraseña
+    cursor = db.cursor(dictionary=True)
 
-    cursor = db.cursor()  # Crear cursor SQL
+#VERIFICAR SI EL USUARIO O EMAIL YA EXISTE EN LA BASE DE DATOS 
+    cursor.execute(query, (email, username))
+    existing_user = cursor.fetchone()
+
+    if existing_user:
+        cursor.close()
+        return jsonify({"error": "Usuario o email ya existe"}), 409
+
+    # Encriptar contraseña
+    password_hash = generate_password_hash(password)
+
+    # Insertar usuario
     query = "INSERT INTO usuarios (username, email, password_hash) VALUES (%s, %s, %s)"
-    valores = (username, email, password_hash)
+    cursor.execute(query, (username, email, password_hash))
 
-    cursor.execute(query, valores)  # Ejecutar inserción
-    db.commit()  # Guardar cambios
-    cursor.close()  # Cerrar cursor
+    db.commit()
+    cursor.close()
 
     return jsonify({
         "message": "Usuario registrado correctamente",
@@ -73,6 +87,7 @@ def login():
 
     # Verificar contraseña
     if user_found and check_password_hash(user_found["password_hash"], password):
+        session["user"] = user_found["email"] # Guardar usuario en sesión
         return jsonify({
             "message": "Login correcto",
             "user": {
