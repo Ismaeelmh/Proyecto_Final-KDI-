@@ -12,7 +12,7 @@
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
     <button onclick="registrar()">Registrar</button>
-</body>
+
 <script>
 function registrar() {
     const data = {
@@ -30,16 +30,17 @@ function registrar() {
     })
     .then(res => res.json())
     .then(res => {
-    if (res.error) {
-        alert(res.error);
-    } else {
-        alert(res.message || "Usuario registrado");
-        window.location.href = "login.html";
-})
+        if (res.error) {
+            alert(res.error);
+        } else {
+            alert(res.message || "Usuario registrado");
+            window.location.href = "login.html";
+        }
     })
     .catch(err => {
         console.error(err);
     });
 }
 </script>
+</body>
 </html>

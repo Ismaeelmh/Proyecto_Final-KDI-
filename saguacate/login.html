@@ -11,7 +11,7 @@
     <input id="username" placeholder="Username">
     <input id="password" type="password" placeholder="Password">
     <button onclick="login()">Iniciar sesión</button>
-</body>
+
 <script>
 function login() {
     const data = {
@@ -28,19 +28,17 @@ function login() {
     })
     .then(res => res.json())
     .then(res => {
-    if (res.error) {
-        alert(res.error);
-    } else {
-        alert(res.message || "Login correcto");
-        window.location.href = "menu.html";
-    }
-})
-    }
-})
+        if (res.error) {
+            alert(res.error);
+        } else {
+            alert(res.message || "Login correcto");
+            window.location.href = "menu.html";
+        }
     })
     .catch(err => {
         console.error(err);
     });
-
+}
 </script>
+</body>
 </html>
