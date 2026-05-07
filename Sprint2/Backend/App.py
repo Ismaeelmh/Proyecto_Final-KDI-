@@ -8,7 +8,7 @@ CORS(app)  # Activar CORS
 
 # Conexión con MySQL en servidor EC2
 db = mysql.connector.connect(
-    host="ec2-3-210-183-89.compute-1.amazonaws.com",
+    host="3.234.171.83",
     user="visualcode",
     password="saguacate",
     database="saguacate",
@@ -66,7 +66,7 @@ def login():
     cursor = db.cursor(dictionary=True)  # Cursor tipo diccionario
    
     query = "SELECT * FROM usuarios WHERE username = %s"
-    cursor.execute(query, (username,))
+    cursor.execute(query, (username,)) 
     
     user_found = cursor.fetchone()  # Buscar usuario
     cursor.close()
