@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session  # Importar Flask y utilidades JSON
+from flask import Flask, jsonify, render_template, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
@@ -25,6 +25,20 @@ print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 @app.route('/')
 def home():
     return jsonify({"message": "Bienvenido a juegos"})  # Ruta principal
+
+# FRONTEND ROUTES (HTML)
+def login_page():
+    return render_template('login.html')
+
+
+@app.route('/registro')
+def registro_page():
+    return render_template('registro.html')
+
+
+@app.route('/menu')
+def menu_page():
+    return render_template('menu.html')
 
 
 # REGISTRO
