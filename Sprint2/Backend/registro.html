@@ -21,7 +21,7 @@ function registrar() {
         password: document.getElementById("password").value
     };
 
-    fetch("http://127.0.0.1:5000/registro", {
+    fetch("/api/registro",{
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -34,7 +34,7 @@ function registrar() {
             alert(res.error);
         } else {
             alert(res.message || "Usuario registrado");
-            window.location.href = "login.html";
+            window.location.href = "/login-page";
         }
     })
     .catch(err => {
