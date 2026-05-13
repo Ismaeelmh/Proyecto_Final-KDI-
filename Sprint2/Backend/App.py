@@ -96,7 +96,7 @@ def login():
             "message": "Login correcto",
             "user": {
                 "username": user_found["username"],
-                "email": user_found["email"]
+                "password": user_found["password"]
             }
         }), 200
 
