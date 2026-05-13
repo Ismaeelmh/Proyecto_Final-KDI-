@@ -44,7 +44,7 @@ def menu_page():
 # REGISTRO
 @app.route('/registro', methods=['POST'])
 def register():
-    data = request.get_json()  # Obtener datos enviados
+    data = request.get_json()  # Obtener datos enviados 
 
     username = data.get("username")
     email = data.get("email")
@@ -146,4 +146,4 @@ def menu():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Ejecutar servidor en modo debug
+    app.run(debug=True)  
