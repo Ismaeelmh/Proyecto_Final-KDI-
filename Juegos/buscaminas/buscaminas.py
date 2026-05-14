@@ -209,7 +209,7 @@ while running:
             if salir_botton.collidepoint(mouse_pos):
                 running = False
 
-            if not game_over:  # NEW
+            if not game_over:  # 
 
                 # CLIC IZQUIERDO
                 if event.button == 1:
@@ -250,9 +250,9 @@ while running:
 
     elapsed_time = int(time.time() - start_time)
 
-    if not game_over and check_win():  # NEW
+    if not game_over and check_win():  # 
         result_text_value = "¡Ganaste!"
-        game_over = True  # NEW
+        game_over = True  # 
 
     draw_ui()
     draw_grid()

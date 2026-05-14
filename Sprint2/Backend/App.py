@@ -41,7 +41,7 @@ def menu_page():
 
 
 # REGISTRO
-@app.route('/registro', methods=['POST'])
+@app.route('/api/registro', methods=['POST'])
 def register():
     data = request.get_json()  # Obtener datos enviados 
 
@@ -52,7 +52,21 @@ def register():
     # Validar campos vacíos
     if not username or not email or not password:
         return jsonify({"error": "Faltan datos"}), 400
+    cursor = db.cursor(dictionary=True)
 
+    # VERIFICAR SI USUARIO YA EXISTE
+    query_check = """SELECT * FROM usuarios WHERE username = %s OR email = %s """
+
+    cursor.execute(query_check, (username, email))
+
+    user_exist = cursor.fetchone()
+
+    if user_exist:
+            cursor.close()
+            return jsonify({
+                "error": "El usuario o email ya existen"
+            }), 409
+    
     password_hash = generate_password_hash(password)  # Encriptar contraseña
 
     cursor = db.cursor()  # Crear cursor SQL
@@ -95,7 +109,7 @@ def login():
             "message": "Login correcto",
             "user": {
                 "username": user_found["username"],
-                "pasword": user_found["password"]
+                "password": user_found["password"]
             }
         }), 200
 
@@ -142,6 +156,37 @@ def menu():
         "message": "Menú principal",
         "options": menu_options
     }), 200
+
+
+# Feedback 
+@app.route('/feedback', methods=['POST'])
+def feedback():
+
+    data = request.get_json()
+
+    username = data.get("username")
+    mensaje = data.get("mensaje")
+
+    if not username or not mensaje:
+        return jsonify({
+            "error": "Faltan datos"
+        }), 400
+
+    cursor = db.cursor()
+
+    query = "INSERT INTO feedback (username, mensaje) VALUES (%s, %s)"
+
+    valores = (username, mensaje)
+
+    cursor.execute(query, valores)
+
+    db.commit()
+
+    cursor.close()
+
+    return jsonify({
+        "message": "Feedback enviado correctamente"
+    }), 201
 
 
 if __name__ == '__main__':
