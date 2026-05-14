@@ -19,7 +19,7 @@ function login() {
         password: document.getElementById("password").value
     };
 
-    fetch("http://127.0.0.1:5000/login", {
+    fetch("/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -27,17 +27,26 @@ function login() {
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(res => {
-        if (res.error) {
-            alert(res.error);
-        } else {
-            alert(res.message || "Login correcto");
-            window.location.href = "menu.html";
-        }
-    })
-    .catch(err => {
-        console.error(err);
-    });
+.then(data => {
+
+    if (!data.message) {
+        alert("Error desconocido");
+        return;
+    }
+
+    if (data.message.includes("incorrectos")) {
+        alert(data.message);
+        return;
+    }
+
+    alert("Login correcto");
+    window.location.href = "/menu-page";
+})
+.catch(err => {
+    console.error(err);
+    alert("Error del servidor");
+});
+   
 }
 </script>
 </body>
