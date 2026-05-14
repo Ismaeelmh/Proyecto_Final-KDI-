@@ -1,0 +1,85 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: #e6f6ff;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* TÍTULO */
+h2 {
+    color: #87cefa;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(135, 206, 250, 0.4);
+}
+
+/* CONTENEDOR */
+.game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* IMAGEN GRANDE */
+.game img {
+    width: 240px;
+    height: 150px;
+
+    border-radius: 16px;
+    object-fit: cover;
+
+    border: 1px solid rgba(135, 206, 250, 0.4);
+
+    margin-bottom: 15px;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+
+    transition: transform 0.3s ease;
+}
+
+.game img:hover {
+    transform: scale(1.05);
+}
+
+/* BOTONES */
+.buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* ESTILO BOTONES */
+button {
+    background: linear-gradient(145deg, #1f1f1f, #0d0d0d);
+    color: #87cefa;
+
+    border: 1px solid rgba(135, 206, 250, 0.35);
+    border-radius: 12px;
+
+    padding: 10px 16px;
+
+    font-size: 15px;
+    cursor: pointer;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+
+    transition: all 0.25s ease;
+}
+
+/* HOVER BOTÓN */
+button:hover {
+    transform: translateY(-4px);
+    border-color: #87cefa;
+    box-shadow: 0 0 18px rgba(135, 206, 250, 0.5);
+}
+
+/* CLICK */
+button:active {
+    transform: scale(0.97);
+}

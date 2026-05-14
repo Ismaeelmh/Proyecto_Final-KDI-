@@ -27,16 +27,15 @@ def home():
     return jsonify({"message": "Bienvenido a juegos"})  # Ruta principal
 
 # FRONTEND ROUTES (HTML)
+@app.route('/login-page')
 def login_page():
     return render_template('login.html')
 
-
-@app.route('/registro')
+@app.route('/registro-page')
 def registro_page():
     return render_template('registro.html')
 
-
-@app.route('/menu')
+@app.route('/menu-page')
 def menu_page():
     return render_template('menu.html')
 
@@ -146,4 +145,4 @@ def menu():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)  
+   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
