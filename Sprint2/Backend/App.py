@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, session  # Importar Flask y utilidades JSON
+from flask import Flask, jsonify, redirect, render_template, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
@@ -24,14 +24,14 @@ print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Bienvenido a juegos"})  # Ruta principal
+    return redirect('/registro') # Ruta principal
 
 # FRONTEND ROUTES (HTML)
 @app.route('/login-page')
 def login_page():
     return render_template('login.html')
 
-@app.route('/registro-page')
+@app.route('/registro')
 def registro_page():
     return render_template('registro.html')
 
@@ -52,21 +52,7 @@ def register():
     # Validar campos vacíos
     if not username or not email or not password:
         return jsonify({"error": "Faltan datos"}), 400
-    cursor = db.cursor(dictionary=True)
 
-    # VERIFICAR SI USUARIO YA EXISTE
-    query_check = """SELECT * FROM usuarios WHERE username = %s OR email = %s """
-
-    cursor.execute(query_check, (username, email))
-
-    user_exist = cursor.fetchone()
-
-    if user_exist:
-            cursor.close()
-            return jsonify({
-                "error": "El usuario o email ya existen"
-            }), 409
-    
     password_hash = generate_password_hash(password)  # Encriptar contraseña
 
     cursor = db.cursor()  # Crear cursor SQL
@@ -87,39 +73,47 @@ def register():
 
 
 # LOGIN
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json()  # Obtener datos enviados
+    data = request.get_json()
 
     username = data.get("username")
     password = data.get("password")
 
-    cursor = db.cursor(dictionary=True)  # Cursor tipo diccionario
-   
+    # Validate input
+    if not username or not password:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    cursor = db.cursor(dictionary=True)
+
+    # Find user by username
     query = "SELECT * FROM usuarios WHERE username = %s"
-    cursor.execute(query, (username,)) 
-    
-    user_found = cursor.fetchone()  # Buscar usuario
+    cursor.execute(query, (username,))
+    user_found = cursor.fetchone()
     cursor.close()
 
-    # Verificar contraseña
-    if user_found and check_password_hash(user_found["password_hash"], password):
-        session["user"] = user_found["email"] # Guardar usuario en sesión
-        return jsonify({
-            "message": "Login correcto",
-            "user": {
-                "username": user_found["username"],
-                "password": user_found["password"]
-            }
-        }), 200
+    # User not found
+    if not user_found:
+        return jsonify({"error": "Usuario no existe"}), 401
+
+    # Wrong password
+    if not check_password_hash(user_found["password_hash"], password):
+        return jsonify({"error": "Contraseña incorrecta"}), 401
+
+    # Save session
+    session["user"] = user_found["email"]
 
     return jsonify({
-        "message": "username o contraseña incorrectos"
-    }), 401
+        "message": "Login correcto",
+        "user": {
+            "username": user_found["username"],
+            "email": user_found["email"]
+        }
+    }), 200
 
 
 # PROFILE
-@app.route('/profile', methods=['POST'])
+@app.route('/api/profile', methods=['POST'])
 def profile():
     data = request.get_json()  # Obtener email enviado
 
@@ -143,7 +137,7 @@ def profile():
 
 
 # MENU
-@app.route('/menu', methods=['GET'])
+@app.route('/api/menu', methods=['GET'])
 def menu():
 
     menu_options = [
