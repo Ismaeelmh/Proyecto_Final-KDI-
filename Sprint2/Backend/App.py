@@ -259,5 +259,35 @@ def feedback_snake():
         }
     }), 201
 
+# API USERS
+@app.route('/api/users', methods=['GET'])
+def get_users():
+
+    return jsonify({
+        "message": "API users funcionando"
+    }), 200
+
+
+# API USERS MYSQL
+@app.route('/api/users/mysql', methods=['GET'])
+def get_users_mysql():
+
+    # Crear cursor SQL
+    cursor = db.cursor(dictionary=True)
+
+    # Query obtener usuarios
+    query = "SELECT id, username, email FROM usuarios"
+
+    cursor.execute(query)
+
+    users = cursor.fetchall()
+
+    cursor.close()
+
+    return jsonify({
+        "users": users
+    }), 200
+
+
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
