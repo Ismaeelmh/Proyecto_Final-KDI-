@@ -3,14 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <link rel="icon" href="logo_saguacate.png" type="image/png">
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
-    <h2>Login</h2>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Iniciar sesión</button>
+<div class="container">
+    <!-- IZQUIERDA: LOGIN -->
+    <div class="left">
+        <div class="form">
+            <h2>Login</h2>
+            <label>Usuario</label>
+            <input id="username" placeholder="Username">
+
+            <label>Contraseña</label>
+            <input id="password" type="password" placeholder="Password">
+
+            <button onclick="login()">Iniciar sesión</button>
+        </div>
+    </div>
+
+    <!-- DERECHA: IMAGEN -->
+    <div class="right">
+        <img src="logo.png" alt="imagen">
+    </div>
+</div>
 
 <script>
 function login() {
@@ -27,26 +45,25 @@ function login() {
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-.then(data => {
+    .then(data => {
 
-    if (!data.message) {
-        alert("Error desconocido");
-        return;
-    }
+        if (!data.message) {
+            alert("Error desconocido");
+            return;
+        }
 
-    if (data.message.includes("incorrectos")) {
-        alert(data.message);
-        return;
-    }
+        if (data.message.includes("incorrectos")) {
+            alert(data.message);
+            return;
+        }
 
-    alert("Login correcto");
-    window.location.href = "/menu-page";
-})
-.catch(err => {
-    console.error(err);
-    alert("Error del servidor");
-});
-   
+        alert("Login correcto");
+        window.location.href = "/menu-page";
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Error del servidor");
+    });
 }
 </script>
 </body>
