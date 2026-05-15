@@ -2,10 +2,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-    color: #e6f6ff;
-
+    color: #000000;
     height: 100vh;
 }
 
@@ -15,56 +13,53 @@ body {
     height: 100vh;
 }
 
-/* IZQUIERDA (LOGIN) */
+/* IZQUIERDA (LOGIN MÁS GRANDE) */
 .left {
     width: 50%;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-/* DERECHA (LOGO) */
+/* DERECHA (IMAGEN COMPLETA) */
 .right {
     width: 50%;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     background: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
-/* FORM */
+/* FORM MÁS GRANDE */
 .form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 18px;
+    transform: scale(1.15);
 }
 
-/* LOGO GRANDE */
+/* IMAGEN */
 .right img {
-    width: 420px;
-
-    border-radius: 16px;
-    border: 1px solid rgba(135, 206, 250, 0.4);
-
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
-
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .right img:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 /* TÍTULO */
 h2 {
+    position: relative;
+    top: -30px;                 /* ⬅ sube SOLO el título */
     color: #87cefa;
-    margin-bottom: 20px;
-    font-size: 2rem;
+    margin-bottom: 25px;
+    font-size: 2.5rem;
     text-shadow: 0 0 10px rgba(135, 206, 250, 0.4);
 }
 
@@ -72,23 +67,20 @@ h2 {
 label {
     align-self: flex-start;
     margin-left: 5px;
-    font-size: 14px;
+    font-size: 16px;
     color: #cfe8ff;
 }
 
-/* INPUTS */
+/* INPUTS MÁS GRANDES */
 input {
-    width: 280px;
-    padding: 10px 14px;
-
+    width: 340px;
+    padding: 14px 18px;
+    font-size: 16px;
     background: linear-gradient(145deg, #1f1f1f, #0d0d0d);
     color: #e6f6ff;
-
     border: 1px solid rgba(135, 206, 250, 0.35);
     border-radius: 12px;
-
     outline: none;
-
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
 }
 
@@ -97,19 +89,16 @@ input:focus {
     box-shadow: 0 0 18px rgba(135, 206, 250, 0.5);
 }
 
-/* BOTÓN */
+/* BOTÓN MÁS GRANDE */
 button {
-    width: 310px;
-    padding: 10px 16px;
-
+    width: 380px;
+    padding: 14px 18px;
+    font-size: 16px;
     background: linear-gradient(145deg, #1f1f1f, #0d0d0d);
     color: #87cefa;
-
     border: 1px solid rgba(135, 206, 250, 0.35);
     border-radius: 12px;
-
     cursor: pointer;
-
     transition: 0.25s;
 }
 
@@ -120,7 +109,7 @@ button:hover {
 
 /* TEXTO LOGIN */
 .login-text {
-    font-size: 14px;
+    font-size: 16px;
     color: #e6f6ff;
 }
 
