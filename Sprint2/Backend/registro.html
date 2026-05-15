@@ -3,45 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registro</title>
     <link rel="stylesheet" href="registro.css">
 </head>
+
 <body>
-    <h2>Registro</h2>
 
-    <input id="username" placeholder="Username">
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="registrar()">Registrar</button>
+<div class="container">
+    <div class="left">
 
-<script>
-function registrar() {
-    const data = {
-        username: document.getElementById("username").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-    };
+        <h2>Registro</h2>
 
-    fetch("/api/registro",{
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-        if (res.error) {
-            alert(res.error);
-        } else {
-            alert(res.message || "Usuario registrado");
-            window.location.href = "/login-page";
-        }
-    })
-    .catch(err => {
-        console.error(err);
-    });
-}
-</script>
+        <div class="form">
+
+            <label>Nombre de usuario</label>
+            <input id="username" placeholder="Nombre de usuario">
+
+            <label>Email</label>
+            <input id="email" placeholder="Email">
+
+            <label>Contraseña</label>
+            <input id="password" type="password" placeholder="Contraseña">
+
+            <button onclick="registrar()">Registrar</button>
+
+            <p class="login-text">
+                ¿Ya tienes cuenta?
+                <a href="/login-page">Inicia sesión</a>
+            </p>
+
+        </div>
+    </div>
+    <div class="right">
+        <img src="logo.png" alt="Logo empresa">
+    </div>
+
+</div>
+
 </body>
 </html>
