@@ -135,6 +135,42 @@ def profile():
         "message": "Usuario no encontrado"
     }), 404
 
+# Actulizar PROFILE
+@app.route('/api/profile/update', methods=['PUT'])
+def update_profile():
+
+    # Obtener datos enviados
+    data = request.get_json()
+
+    username = data.get("username")
+    email = data.get("email")
+
+    # Validar datos
+    if not username or not email:
+
+        return jsonify({
+            "error": "Faltan datos"
+        }), 400
+
+    # Crear cursor SQL
+    cursor = db.cursor()
+
+    # Actualizar perfil
+    query = "UPDATE usuarios SET email = %s WHERE username = %s"
+
+    valores = (email, username)
+
+    cursor.execute(query, valores)
+
+    # Guardar cambios
+    db.commit()
+
+    cursor.close()
+
+    return jsonify({
+        "message": "Perfil actualizado correctamente"
+    }), 200
+
 
 # MENU
 @app.route('/api/menu', methods=['GET'])
@@ -152,14 +188,6 @@ def menu():
     }), 200
 
 # SISTEMA DE FEEDBACK Por cada juego
-# ================================
-# SISTEMA DE FEEDBACK
-# ================================
-
-# PG5-260 — 33.1 Crear endpoint de feedback
-# PG5-261 — 33.2 Respuestas y errores API
-# PG5-262 — 33.3 Validación backend
-
 # Feedback Buscaminas
 @app.route('/api/feedback/buscaminas', methods=['POST'])
 def feedback_buscaminas():
