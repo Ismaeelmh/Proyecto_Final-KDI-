@@ -151,37 +151,85 @@ def menu():
         "options": menu_options
     }), 200
 
+# SISTEMA DE FEEDBACK Por cada juego
+# ================================
+# SISTEMA DE FEEDBACK
+# ================================
 
-# Feedback 
-@app.route('/feedback', methods=['POST'])
-def feedback():
+# PG5-260 — 33.1 Crear endpoint de feedback
+# PG5-261 — 33.2 Respuestas y errores API
+# PG5-262 — 33.3 Validación backend
 
-    data = request.get_json()
+# Feedback Buscaminas
+@app.route('/api/feedback/buscaminas', methods=['POST'])
+def feedback_buscaminas():
+    data = request.get_json()  # Obtener datos enviados
 
     username = data.get("username")
     mensaje = data.get("mensaje")
 
-    if not username or not mensaje:
-        return jsonify({
-            "error": "Faltan datos"
-        }), 400
+    # Validar campos vacíos
+    if not username:
+        return jsonify({"error": "Falta el username"}), 400
+    if not mensaje:
+        return jsonify({"error": "Falta el mensaje"}), 400
 
-    cursor = db.cursor()
+    # Validar longitud del mensaje
+    if len(mensaje) < 3:
+        return jsonify({"error": "El mensaje es muy corto"}), 400
+    if len(mensaje) > 500:
+        return jsonify({"error": "El mensaje es muy largo"}), 400
 
-    query = "INSERT INTO feedback (username, mensaje) VALUES (%s, %s)"
-
-    valores = (username, mensaje)
-
-    cursor.execute(query, valores)
-
-    db.commit()
-
-    cursor.close()
+    cursor = db.cursor()  # Crear cursor SQL
+    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'buscaminas')"
+    cursor.execute(query, (username, mensaje))
+    db.commit()   # Guardar cambios
+    cursor.close()  # Cerrar cursor
 
     return jsonify({
-        "message": "Feedback enviado correctamente"
+        "message": "Feedback de Buscaminas enviado correctamente",
+        "data": {
+            "username": username,
+            "mensaje": mensaje,
+            "juego": "buscaminas"
+        }
     }), 201
 
+
+# Feedback Snake
+@app.route('/api/feedback/snake', methods=['POST'])
+def feedback_snake():
+    data = request.get_json()  # Obtener datos enviados
+
+    username = data.get("username")
+    mensaje = data.get("mensaje")
+
+    # Validar campos vacíos
+    if not username:
+        return jsonify({"error": "Falta el username"}), 400
+    if not mensaje:
+        return jsonify({"error": "Falta el mensaje"}), 400
+
+    # Validar longitud del mensaje
+    if len(mensaje) < 3:
+        return jsonify({"error": "El mensaje es muy corto"}), 400
+    if len(mensaje) > 500:
+        return jsonify({"error": "El mensaje es muy largo"}), 400
+
+    cursor = db.cursor()  # Crear cursor SQL
+    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'snake')"
+    cursor.execute(query, (username, mensaje))
+    db.commit()   # Guardar cambios
+    cursor.close()  # Cerrar cursor
+
+    return jsonify({
+        "message": "Feedback de Snake enviado correctamente",
+        "data": {
+            "username": username,
+            "mensaje": mensaje,
+            "juego": "snake"
+        }
+    }), 201
 
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
