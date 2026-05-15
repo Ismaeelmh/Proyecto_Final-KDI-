@@ -1,0 +1,82 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: #e6f6ff;
+}
+
+/* TÍTULO */
+h2 {
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+
+    color: #87cefa;
+    text-align: center;
+
+    text-shadow: 0 0 10px rgba(135, 206, 250, 0.4);
+}
+
+/* INPUTS */
+input {
+    display: block;
+
+    width: 340px;
+    margin: 10px auto;
+    padding: 14px 18px;
+
+    font-size: 16px;
+
+    background: linear-gradient(145deg, #1f1f1f, #0d0d0d);
+    color: #e6f6ff;
+
+    border: 1px solid rgba(135, 206, 250, 0.35);
+    border-radius: 12px;
+
+    outline: none;
+
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+}
+
+/* FOCUS INPUT */
+input:focus {
+    border-color: #87cefa;
+    box-shadow: 0 0 18px rgba(135, 206, 250, 0.5);
+}
+
+/* BOTÓN */
+button {
+    width: 380px;
+    margin-top: 15px;
+    padding: 14px 18px;
+
+    font-size: 16px;
+
+    background: linear-gradient(145deg, #1f1f1f, #0d0d0d);
+    color: #87cefa;
+
+    border: 1px solid rgba(135, 206, 250, 0.35);
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+/* HOVER */
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 18px rgba(135, 206, 250, 0.5);
+}
+
+/* CENTRADO PERFECTO */
+body {
+    text-align: center;
+}
