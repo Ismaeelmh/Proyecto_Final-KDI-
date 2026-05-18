@@ -41,7 +41,24 @@ body {
     gap: 20px;
 }
 
-/* TÍTULO */
+/* 🔥 TÍTULO SAGUACATE */
+.titulo-principal {
+    width: 100%;
+    text-align: center;
+
+    font-size: 3.2rem;
+    margin: 0;
+
+    color: #ffffff;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: bold;
+
+    text-shadow: 0 0 20px rgba(135, 206, 250, 0.7);
+    margin-bottom: 5px;
+}
+
+/* TÍTULO LOGIN */
 h2 {
     width: 100%;
     text-align: center;
