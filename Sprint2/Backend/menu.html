@@ -2,67 +2,64 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Menu de Juegos</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='menu.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saguacate</title>
+    <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
 
-<header>
-    <h1>Saguacate</h1>
+    <header>
+        <h1>Saguacate</h1>
 
-    <button class="perfil" onclick="abrirPerfil()">
-        <span id="nombreUsuario"></span>
-    </button>
-</header>
+        <button class="perfil" onclick="abrirPerfil()">
+            <span id="nombreUsuario"></span>
+        </button>
+    </header>
 
-<div class="games-container">
+    <div class="games-container">
 
-    <div class="game" onclick="abrirSerpiente()">
-        <img src="{{ url_for('static', filename='cobra.png') }}"
-             alt="Serpiente">
-        <h2>Serpiente</h2>
+        <div class="game" onclick="abrirSerpiente()">
+            <img src="cobra.png" alt="Serpiente">
+            <h2>Serpiente</h2>
+        </div>
+
+        <div class="game" onclick="abrirBuscaminas()">
+            <img src="buscaminas.jpg" alt="Buscaminas">
+            <h2>Buscaminas</h2>
+        </div>
+
     </div>
 
-    <div class="game" onclick="abrirBuscaminas()">
-        <img src="{{ url_for('static', filename='buscaminas.jpg') }}"
-             alt="Buscaminas">
-        <h2>Buscaminas</h2>
-    </div>
-
-</div>
-
-<button class="logout" onclick="logout()">Cerrar sesión</button>
+    <button class="logout" onclick="logout()">Cerrar sesión</button>
 
 <script>
 
-// Serpiente
+//  Serpiente
 function abrirSerpiente() {
     window.open("/Juegos/serpiente/build/web/index.html", "_blank");
 }
 
-// Buscaminas
+//  Buscaminas
 function abrirBuscaminas() {
     window.open("/Juegos/buscaminas/build/web/index.html", "_blank");
 }
 
-// Perfil
+//  Perfil
 function abrirPerfil() {
     window.location.href = "perfil.html";
 }
 
-// Logout
+//  Logout
 function logout() {
     localStorage.removeItem("usuario");
     window.location.href = "login.html";
 }
 
-// Mostrar usuario o fallback
+//  Mostrar usuario o fallback
 document.addEventListener("DOMContentLoaded", function () {
-
     const usuario = localStorage.getItem("usuario");
+
     const nombre = document.getElementById("nombreUsuario");
 
     if (!usuario) {
