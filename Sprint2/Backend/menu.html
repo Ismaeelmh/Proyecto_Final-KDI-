@@ -16,8 +16,8 @@
         <img src="serpiente.png.png" alt="Serpiente">
 
         <div class="buttons">
-            <button onclick="abrirSerpiente()">🎮 Jugar Solo</button>
-            <button onclick="abrirSerpiente()">👥 Multijugador</button>
+            <button onclick="abrirSerpiente(1)">🎮 Jugar Solo</button>
+            <button onclick="abrirSerpiente(2)">👥 Multijugador</button>
         </div>
 
     </div>
@@ -43,8 +43,8 @@
 
 <script>
 
-function abrirSerpiente() {
-    window.location.href = "/Juegos/serpiente/build/web/index.html";
+function abrirSerpiente(modo) {
+    window.location.href = "/Juegos/serpiente/build/web/index.html?modo=" + modo;
 }
 
 function abrirBuscaminas() {
