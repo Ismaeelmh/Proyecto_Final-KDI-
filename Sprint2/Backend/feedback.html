@@ -18,26 +18,36 @@
     <textarea id="comentario" placeholder="Escribe tu opinión..."></textarea>
 
     <button onclick="enviarFeedback()">Enviar</button>
-    
-    <!-- 🔵 BOTÓN VOLVER -->
-    <button class="volver" onclick="volverMenu()">Volver al menú</button>
+
+    <button onclick="volverMenu()">Volver al menú</button>
 
 </div>
 
 <script>
 
+// cargar juego desde localStorage
 const juego = localStorage.getItem("feedbackJuego");
+const usuario = localStorage.getItem("usuario");
 
-document.getElementById("juegoNombre").textContent = "Juego: " + juego;
+// mostrar juego en pantalla
+document.getElementById("juegoNombre").textContent =
+    "Juego: " + (juego || "NO DEFINIDO");
 
-// enviar feedback
 function enviarFeedback() {
 
     const texto = document.getElementById("comentario").value;
-    const usuario = localStorage.getItem("usuario");
+
+    console.log("usuario:", usuario);
+    console.log("juego:", juego);
+    console.log("mensaje:", texto);
 
     if (!texto) {
         alert("Escribe algo primero");
+        return;
+    }
+
+    if (!usuario || !juego) {
+        alert("Falta usuario o juego (localStorage vacío)");
         return;
     }
 
@@ -47,25 +57,35 @@ function enviarFeedback() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            juego: juego,
-            comentario: texto,
-            usuario: usuario
+            username: usuario,
+            mensaje: texto,
+            juego: juego
         })
     })
-    .then(res => res.json())
-    .then(() => {
-        alert("Feedback enviado");
+    .then(async res => {
+
+        const data = await res.json();
+
+        console.log("respuesta backend:", data);
+
+        if (!res.ok) {
+            alert(data.error || "Error del servidor");
+            return;
+        }
+
+        alert("Feedback enviado correctamente");
+
         document.getElementById("comentario").value = "";
+
     })
     .catch(err => {
-        alert("Error al enviar feedback");
         console.error(err);
+        alert("Error de conexión con el servidor");
     });
 }
 
-// 🔵 volver al menú
 function volverMenu() {
-    window.location.href = "menu.html";
+    window.location.href = "/menu";
 }
 
 </script>

@@ -1,79 +1,60 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Menu de Juegos</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='menu.css') }}">
+    <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
 
-<header>
-    <h1>Saguacate</h1>
+    <h2>Menu de Juegos</h2>
 
-    <button class="perfil" onclick="abrirPerfil()">
-        <span id="nombreUsuario"></span>
-    </button>
-</header>
+    <!-- SERPIENTE -->
+    <div class="game">
 
-<div class="games-container">
+        <img src="serpiente.png.png" alt="Serpiente">
 
-    <div class="game" onclick="abrirSerpiente()">
-        <img src="{{ url_for('static', filename='cobra.png') }}"
-             alt="Serpiente">
-        <h2>Serpiente</h2>
+        <div class="buttons">
+            <button onclick="abrirSerpiente()">🎮 Jugar Solo</button>
+            <button onclick="abrirSerpiente()">👥 Multijugador</button>
+        </div>
+
     </div>
 
-    <div class="game" onclick="abrirBuscaminas()">
-        <img src="{{ url_for('static', filename='buscaminas.jpg') }}"
-             alt="Buscaminas">
-        <h2>Buscaminas</h2>
+    <!-- BUSCAMINAS -->
+    <div class="game">
+
+        <img src="imagenes/buscaminas.png" alt="Buscaminas">
+
+        <div class="buttons">
+            <button onclick="abrirBuscaminas()">🎮 Jugar</button>
+            <button onclick="abrirBuscaminas()">⚙️ Modo clásico</button>
+        </div>
+
     </div>
 
-</div>
+    <br>
 
-<button class="logout" onclick="logout()">Cerrar sesión</button>
+    <!-- LOGOUT -->
+    <button onclick="logout()">Cerrar sesión</button>
+
+</body>
 
 <script>
 
-// Serpiente
 function abrirSerpiente() {
-    window.open("/Juegos/serpiente/build/web/index.html", "_blank");
+    window.location.href = "/Juegos/serpiente/build/web/index.html";
 }
 
-// Buscaminas
 function abrirBuscaminas() {
-    window.open("/Juegos/buscaminas/build/web/index.html", "_blank");
+    window.location.href = "/Juegos/buscaminas/build/web/index.html";
 }
 
-// Perfil
-function abrirPerfil() {
-    window.location.href = "perfil.html";
-}
-
-// Logout
 function logout() {
-    localStorage.removeItem("usuario");
     window.location.href = "login.html";
 }
 
-// Mostrar usuario o fallback
-document.addEventListener("DOMContentLoaded", function () {
-
-    const usuario = localStorage.getItem("usuario");
-    const nombre = document.getElementById("nombreUsuario");
-
-    if (!usuario) {
-        nombre.textContent = "Perfil";
-        return;
-    }
-
-    nombre.textContent = usuario;
-});
-
 </script>
 
-</body>
 </html>

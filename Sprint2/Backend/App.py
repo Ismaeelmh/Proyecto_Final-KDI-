@@ -197,75 +197,46 @@ def menu():
     }), 200
 
 # SISTEMA DE FEEDBACK Por cada juego
-# Feedback Buscaminas
-@app.route('/api/feedback/buscaminas', methods=['POST'])
-def feedback_buscaminas():
-    data = request.get_json()  # Obtener datos enviados
+@app.route('/api/feedback', methods=['POST'])
+def feedback():
+
+    data = request.get_json()
 
     username = data.get("username")
     mensaje = data.get("mensaje")
+    juego = data.get("juego")
 
-    # Validar campos vacíos
+    # validaciones básicas
     if not username:
         return jsonify({"error": "Falta el username"}), 400
+
     if not mensaje:
         return jsonify({"error": "Falta el mensaje"}), 400
 
-    # Validar longitud del mensaje
-    if len(mensaje) < 3:
-        return jsonify({"error": "El mensaje es muy corto"}), 400
-    if len(mensaje) > 500:
-        return jsonify({"error": "El mensaje es muy largo"}), 400
+    if not juego:
+        return jsonify({"error": "Falta el juego"}), 400
 
-    cursor = db.cursor()  # Crear cursor SQL
-    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'buscaminas')"
-    cursor.execute(query, (username, mensaje))
-    db.commit()   # Guardar cambios
-    cursor.close()  # Cerrar cursor
+    if len(mensaje) < 3:
+        return jsonify({"error": "Mensaje muy corto"}), 400
+
+    if len(mensaje) > 500:
+        return jsonify({"error": "Mensaje muy largo"}), 400
+
+    # guardar en MySQL
+    cursor = db.cursor()
+
+    query = """
+    INSERT INTO feedback (username, mensaje, juego)
+    VALUES (%s, %s, %s)
+    """
+
+    cursor.execute(query, (username, mensaje, juego))
+
+    db.commit()
+    cursor.close()
 
     return jsonify({
-        "message": "Feedback de Buscaminas enviado correctamente",
-        "data": {
-            "username": username,
-            "mensaje": mensaje,
-            "juego": "buscaminas"
-        }
-    }), 201
-
-
-# Feedback Snake
-@app.route('/api/feedback/snake', methods=['POST'])
-def feedback_snake():
-    data = request.get_json()  # Obtener datos enviados
-
-    username = data.get("username")
-    mensaje = data.get("mensaje")
-
-    # Validar campos vacíos
-    if not username:
-        return jsonify({"error": "Falta el username"}), 400
-    if not mensaje:
-        return jsonify({"error": "Falta el mensaje"}), 400
-
-    # Validar longitud del mensaje
-    if len(mensaje) < 3:
-        return jsonify({"error": "El mensaje es muy corto"}), 400
-    if len(mensaje) > 500:
-        return jsonify({"error": "El mensaje es muy largo"}), 400
-
-    cursor = db.cursor()  # Crear cursor SQL
-    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'snake')"
-    cursor.execute(query, (username, mensaje))
-    db.commit()   # Guardar cambios
-    cursor.close()  # Cerrar cursor
-
-    return jsonify({
-        "message": "Feedback de Snake enviado correctamente",
-        "data": {
-            "username": username,
-            "mensaje": mensaje,
-            "juego": "snake"
-        }
+        "message": "Feedback enviado correctamente"
     }), 201
 
 # API USERS

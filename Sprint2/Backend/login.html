@@ -50,37 +50,31 @@ function login() {
     }
 
     fetch("/api/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+})
+.then(res => res.json())
+.then(res => {
 
-        if (!res.message) {
-            alert("Error desconocido");
-            return;
-        }
+    if (res.error) {
+        alert(res.error);
+        return;
+    }
 
-        if (res.message.includes("incorrectos")) {
-            alert(res.message);
-            return;
-        }
+    // 🟢 GUARDAR USUARIO CORRECTAMENTE
+    localStorage.setItem("usuario", res.user.username);
 
-        // 🟢 GUARDAR USUARIO EN SESIÓN
-        localStorage.setItem("usuario", res.username || data.username);
+    alert("Login correcto");
 
-        alert("Login correcto");
-
-        // 🟢 IR AL MENÚ
-       window.location.replace("/menu");
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Error del servidor");
-    });
+    window.location.replace("/menu");
+})
+.catch(err => {
+    console.error(err);
+    alert("Error del servidor");
+});
 }
 </script>
 
