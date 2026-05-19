@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="icon" href="logo_saguacate.png" type="image/png">
-    <link rel="stylesheet" href="login.css">
+    <link rel="icon" href="/static/logo_saguacate.png" type="image/png">
+    <link rel="stylesheet" href="/static/login.css">
 </head>
 <body>
 
 <div class="container">
-    <!-- IZQUIERDA: LOGIN -->
+    
+    <!-- IZQUIERDA -->
     <div class="left">
         <div class="form">
+
+            <h1 class="titulo-principal">SAGUACATE</h1>
             <h2>Login</h2>
+
             <label>Usuario</label>
             <input id="username" placeholder="Username">
 
@@ -21,12 +25,13 @@
             <input id="password" type="password" placeholder="Password">
 
             <button onclick="login()">Iniciar sesión</button>
+
         </div>
     </div>
 
     <!-- DERECHA: IMAGEN -->
     <div class="right">
-        <img src="logo.png" alt="imagen">
+        <img src="/static/logo.png" alt="imagen">
     </div>
 </div>
 

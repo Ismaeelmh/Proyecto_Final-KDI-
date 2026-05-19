@@ -24,10 +24,10 @@ print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 
 @app.route('/')
 def home():
-    return redirect('/registro') # Ruta principal
+    return render_template('registro.html') # Ruta principal
 
 # FRONTEND ROUTES (HTML)
-@app.route('/login-page')
+@app.route('/login')
 def login_page():
     return render_template('login.html')
 

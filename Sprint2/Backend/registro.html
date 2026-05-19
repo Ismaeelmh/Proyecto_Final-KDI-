@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="stylesheet" href="registro.css">
+    <link rel="stylesheet" href="/static/registro.css">
 </head>
 
 <body>
@@ -12,6 +12,7 @@
 <div class="container">
     <div class="left">
 
+        <h1 class="titulo-principal">Saguacate</h1>
         <h2>Registro</h2>
 
         <div class="form">
@@ -29,16 +30,43 @@
 
             <p class="login-text">
                 ¿Ya tienes cuenta?
-                <a href="/login-page">Inicia sesión</a>
+                <a href="/login">Inicia sesión</a>
             </p>
+
 
         </div>
     </div>
     <div class="right">
-        <img src="logo.png" alt="Logo empresa">
+        <img src="/static/logo.png" alt="Logo empresa">
     </div>
 
 </div>
+<script>
+function registrar() {
+    const data = {
+        username: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
 
-</body>
-</html>
+    fetch("/api/registro",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.error) {
+            alert(res.error);
+        } else {
+            alert(res.message || "Usuario registrado");
+            window.location.replace("/login");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+</script>
