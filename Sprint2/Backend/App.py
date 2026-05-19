@@ -135,7 +135,7 @@ def profile():
         "message": "Usuario no encontrado"
     }), 404
 
-# Actulizar PROFILE
+# ACTUALIZAR PROFILE
 @app.route('/api/profile/update', methods=['PUT'])
 def update_profile():
 
@@ -144,22 +144,31 @@ def update_profile():
 
     username = data.get("username")
     email = data.get("email")
+    password = data.get("password")
 
     # Validar datos
-    if not username or not email:
+    if not username or not email or not password:
 
         return jsonify({
             "error": "Faltan datos"
         }), 400
 
+    # Encriptar nueva contraseña
+    password_hash = generate_password_hash(password)
+
     # Crear cursor SQL
     cursor = db.cursor()
 
     # Actualizar perfil
-    query = "UPDATE usuarios SET email = %s WHERE username = %s"
+    query = """
+    UPDATE usuarios
+    SET email = %s, password_hash = %s
+    WHERE username = %s
+    """
 
-    valores = (email, username)
+    valores = (email, password_hash, username)
 
+    # Ejecutar query
     cursor.execute(query, valores)
 
     # Guardar cambios
