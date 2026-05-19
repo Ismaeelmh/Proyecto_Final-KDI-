@@ -35,7 +35,7 @@ def login_page():
 def registro_page():
     return render_template('registro.html')
 
-@app.route('/menu-page')
+@app.route('/menu')
 def menu_page():
     return render_template('menu.html')
 

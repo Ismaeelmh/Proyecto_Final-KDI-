@@ -7,6 +7,7 @@
     <link rel="icon" href="/static/logo_saguacate.png" type="image/png">
     <link rel="stylesheet" href="/static/login.css">
 </head>
+
 <body>
 
 <div class="container">
@@ -29,10 +30,11 @@
         </div>
     </div>
 
-    <!-- DERECHA: IMAGEN -->
+    <!-- DERECHA -->
     <div class="right">
         <img src="/static/logo.png" alt="imagen">
     </div>
+
 </div>
 
 <script>
@@ -42,6 +44,11 @@ function login() {
         password: document.getElementById("password").value
     };
 
+    if (!data.username || !data.password) {
+        alert("Rellena todos los campos");
+        return;
+    }
+
     fetch("/api/login", {
         method: "POST",
         headers: {
@@ -50,20 +57,25 @@ function login() {
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(data => {
+    .then(res => {
 
-        if (!data.message) {
+        if (!res.message) {
             alert("Error desconocido");
             return;
         }
 
-        if (data.message.includes("incorrectos")) {
-            alert(data.message);
+        if (res.message.includes("incorrectos")) {
+            alert(res.message);
             return;
         }
 
+        // 🟢 GUARDAR USUARIO EN SESIÓN
+        localStorage.setItem("usuario", res.username || data.username);
+
         alert("Login correcto");
-        window.location.href = "/menu-page";
+
+        // 🟢 IR AL MENÚ
+       window.location.replace("/menu");
     })
     .catch(err => {
         console.error(err);
@@ -71,5 +83,6 @@ function login() {
     });
 }
 </script>
+
 </body>
 </html>
