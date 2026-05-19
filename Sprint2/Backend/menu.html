@@ -1,60 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Menu de Juegos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saguacate</title>
     <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
 
-    <h2>Menu de Juegos</h2>
+    <header>
+        <h1>Saguacate</h1>
 
-    <!-- SERPIENTE -->
-    <div class="game">
+        <button class="perfil" onclick="abrirPerfil()">
+            <span id="nombreUsuario"></span>
+        </button>
+    </header>
 
-        <img src="serpiente.png.png" alt="Serpiente">
+    <div class="games-container">
 
-        <div class="buttons">
-            <button onclick="abrirSerpiente()"> Jugar Solo</button>
-            <button onclick="abrirSerpiente()"> Multijugador</button>
+        <div class="game" onclick="abrirSerpiente()">
+            <img src="cobra.png" alt="Serpiente">
+            <h2>Serpiente</h2>
+        </div>
+
+        <div class="game" onclick="abrirBuscaminas()">
+            <img src="buscaminas.jpg" alt="Buscaminas">
+            <h2>Buscaminas</h2>
         </div>
 
     </div>
 
-    <!-- BUSCAMINAS -->
-    <div class="game">
-
-        <img src="imagenes/buscaminas.png" alt="Buscaminas">
-
-        <div class="buttons">
-            <button onclick="abrirBuscaminas()"> Jugar</button>
-            <button onclick="abrirBuscaminas()"> Modo clásico</button>
-        </div>
-
-    </div>
-
-    <br>
-
-    <!-- LOGOUT -->
-    <button onclick="logout()">Cerrar sesión</button>
-
-</body>
+    <button class="logout" onclick="logout()">Cerrar sesión</button>
 
 <script>
 
+//  Serpiente
 function abrirSerpiente() {
-    window.location.href = "/Juegos/serpiente/build/web/index.html";
+    window.open("/Juegos/serpiente/build/web/index.html", "_blank");
 }
 
+//  Buscaminas
 function abrirBuscaminas() {
-    window.location.href = "/Juegos/buscaminas/build/web/index.html";
+    window.open("/Juegos/buscaminas/build/web/index.html", "_blank");
 }
 
+//  Perfil
+function abrirPerfil() {
+    window.location.href = "perfil.html";
+}
+
+//  Logout
 function logout() {
+    localStorage.removeItem("usuario");
     window.location.href = "login.html";
 }
 
+//  Mostrar usuario o fallback
+document.addEventListener("DOMContentLoaded", function () {
+    const usuario = localStorage.getItem("usuario");
+
+    const nombre = document.getElementById("nombreUsuario");
+
+    if (!usuario) {
+        nombre.textContent = "Perfil";
+        return;
+    }
+
+    nombre.textContent = usuario;
+});
+
 </script>
 
+</body>
 </html>

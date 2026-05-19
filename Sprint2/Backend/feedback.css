@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #050505, #111);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CONTENEDOR */
+.container {
+    background: rgba(255,255,255,0.05);
+    padding: 40px;
+    border-radius: 20px;
+    width: 420px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* TITULO */
+h1 {
+    color: #87cefa;
+    margin-bottom: 10px;
+}
+
+/* NOMBRE DEL JUEGO */
+#juegoNombre {
+    color: #ccc;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* TEXTO */
+textarea {
+    width: 100%;
+    height: 140px;
+    border-radius: 12px;
+    border: none;
+    padding: 10px;
+    resize: none;
+    outline: none;
+    font-size: 14px;
+    margin-bottom: 15px;
+    background: #f5f4f4;
+    color: rgb(2, 2, 2);
+}
+
+/* BOTONES GENERALES */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+/* BOTÓN ENVIAR */
+button:not(.volver) {
+    background: #87cefa;
+    color: black;
+}
+
+button:not(.volver):hover {
+    transform: scale(1.03);
+}
+
+/* BOTÓN VOLVER */
+.volver {
+    background: transparent;
+    border: 1px solid #87cefa;
+    color: #87cefa;
+}
+
+.volver:hover {
+    background: rgba(135,206,250,0.1);
+    transform: scale(1.03);
+}

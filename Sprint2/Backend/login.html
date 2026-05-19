@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+
     <link rel="icon" href="logo_saguacate.png" type="image/png">
     <link rel="stylesheet" href="login.css">
 </head>
+
 <body>
 
 <div class="container">
@@ -43,6 +45,11 @@ function login() {
         password: document.getElementById("password").value
     };
 
+    if (!data.username || !data.password) {
+        alert("Rellena todos los campos");
+        return;
+    }
+
     fetch("/api/login", {
         method: "POST",
         headers: {
@@ -51,19 +58,24 @@ function login() {
         body: JSON.stringify(data)
     })
     .then(res => res.json())
-    .then(data => {
+    .then(res => {
 
-        if (!data.message) {
+        if (!res.message) {
             alert("Error desconocido");
             return;
         }
 
-        if (data.message.includes("incorrectos")) {
-            alert(data.message);
+        if (res.message.includes("incorrectos")) {
+            alert(res.message);
             return;
         }
 
+        // 🟢 GUARDAR USUARIO EN SESIÓN
+        localStorage.setItem("usuario", res.username || data.username);
+
         alert("Login correcto");
+
+        // 🟢 IR AL MENÚ
         window.location.href = "/menu-page";
     })
     .catch(err => {
