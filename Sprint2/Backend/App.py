@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, session  # Importar Flask y utilidades JSON
+from flask import Flask, jsonify, redirect, render_template, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
@@ -24,24 +24,24 @@ print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 
 @app.route('/')
 def home():
-    return jsonify({"message": "Bienvenido a juegos"})  # Ruta principal
+    return render_template('registro.html') # Ruta principal
 
 # FRONTEND ROUTES (HTML)
-@app.route('/login-page')
+@app.route('/login')
 def login_page():
     return render_template('login.html')
 
-@app.route('/registro-page')
+@app.route('/registro')
 def registro_page():
     return render_template('registro.html')
 
-@app.route('/menu-page')
+@app.route('/menu')
 def menu_page():
     return render_template('menu.html')
 
 
 # REGISTRO
-@app.route('/registro', methods=['POST'])
+@app.route('/api/registro', methods=['POST'])
 def register():
     data = request.get_json()  # Obtener datos enviados 
 
@@ -73,39 +73,47 @@ def register():
 
 
 # LOGIN
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json()  # Obtener datos enviados
+    data = request.get_json()
 
     username = data.get("username")
     password = data.get("password")
 
-    cursor = db.cursor(dictionary=True)  # Cursor tipo diccionario
-   
+    # Validate input
+    if not username or not password:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    cursor = db.cursor(dictionary=True)
+
+    # Find user by username
     query = "SELECT * FROM usuarios WHERE username = %s"
-    cursor.execute(query, (username,)) 
-    
-    user_found = cursor.fetchone()  # Buscar usuario
+    cursor.execute(query, (username,))
+    user_found = cursor.fetchone()
     cursor.close()
 
-    # Verificar contraseña
-    if user_found and check_password_hash(user_found["password_hash"], password):
-        session["user"] = user_found["email"] # Guardar usuario en sesión
-        return jsonify({
-            "message": "Login correcto",
-            "user": {
-                "username": user_found["username"],
-                "password": user_found["password"]
-            }
-        }), 200
+    # User not found
+    if not user_found:
+        return jsonify({"error": "Usuario no existe"}), 401
+
+    # Wrong password
+    if not check_password_hash(user_found["password_hash"], password):
+        return jsonify({"error": "Contraseña incorrecta"}), 401
+
+    # Save session
+    session["user"] = user_found["email"]
 
     return jsonify({
-        "message": "username o contraseña incorrectos"
-    }), 401
+        "message": "Login correcto",
+        "user": {
+            "username": user_found["username"],
+            "email": user_found["email"]
+        }
+    }), 200
 
 
 # PROFILE
-@app.route('/profile', methods=['POST'])
+@app.route('/api/profile', methods=['POST'])
 def profile():
     data = request.get_json()  # Obtener email enviado
 
@@ -127,9 +135,54 @@ def profile():
         "message": "Usuario no encontrado"
     }), 404
 
+# ACTUALIZAR PROFILE
+@app.route('/api/profile/update', methods=['PUT'])
+def update_profile():
+
+    # Obtener datos enviados
+    data = request.get_json()
+
+    username = data.get("username")
+    email = data.get("email")
+    password = data.get("password")
+
+    # Validar datos
+    if not username or not email or not password:
+
+        return jsonify({
+            "error": "Faltan datos"
+        }), 400
+
+    # Encriptar nueva contraseña
+    password_hash = generate_password_hash(password)
+
+    # Crear cursor SQL
+    cursor = db.cursor()
+
+    # Actualizar perfil
+    query = """
+    UPDATE usuarios
+    SET email = %s, password_hash = %s
+    WHERE username = %s
+    """
+
+    valores = (email, password_hash, username)
+
+    # Ejecutar query
+    cursor.execute(query, valores)
+
+    # Guardar cambios
+    db.commit()
+
+    cursor.close()
+
+    return jsonify({
+        "message": "Perfil actualizado correctamente"
+    }), 200
+
 
 # MENU
-@app.route('/menu', methods=['GET'])
+@app.route('/api/menu', methods=['GET'])
 def menu():
 
     menu_options = [
@@ -141,6 +194,107 @@ def menu():
     return jsonify({
         "message": "Menú principal",
         "options": menu_options
+    }), 200
+
+# SISTEMA DE FEEDBACK Por cada juego
+# Feedback Buscaminas
+@app.route('/api/feedback/buscaminas', methods=['POST'])
+def feedback_buscaminas():
+    data = request.get_json()  # Obtener datos enviados
+
+    username = data.get("username")
+    mensaje = data.get("mensaje")
+
+    # Validar campos vacíos
+    if not username:
+        return jsonify({"error": "Falta el username"}), 400
+    if not mensaje:
+        return jsonify({"error": "Falta el mensaje"}), 400
+
+    # Validar longitud del mensaje
+    if len(mensaje) < 3:
+        return jsonify({"error": "El mensaje es muy corto"}), 400
+    if len(mensaje) > 500:
+        return jsonify({"error": "El mensaje es muy largo"}), 400
+
+    cursor = db.cursor()  # Crear cursor SQL
+    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'buscaminas')"
+    cursor.execute(query, (username, mensaje))
+    db.commit()   # Guardar cambios
+    cursor.close()  # Cerrar cursor
+
+    return jsonify({
+        "message": "Feedback de Buscaminas enviado correctamente",
+        "data": {
+            "username": username,
+            "mensaje": mensaje,
+            "juego": "buscaminas"
+        }
+    }), 201
+
+
+# Feedback Snake
+@app.route('/api/feedback/snake', methods=['POST'])
+def feedback_snake():
+    data = request.get_json()  # Obtener datos enviados
+
+    username = data.get("username")
+    mensaje = data.get("mensaje")
+
+    # Validar campos vacíos
+    if not username:
+        return jsonify({"error": "Falta el username"}), 400
+    if not mensaje:
+        return jsonify({"error": "Falta el mensaje"}), 400
+
+    # Validar longitud del mensaje
+    if len(mensaje) < 3:
+        return jsonify({"error": "El mensaje es muy corto"}), 400
+    if len(mensaje) > 500:
+        return jsonify({"error": "El mensaje es muy largo"}), 400
+
+    cursor = db.cursor()  # Crear cursor SQL
+    query = "INSERT INTO feedback (username, mensaje, juego) VALUES (%s, %s, 'snake')"
+    cursor.execute(query, (username, mensaje))
+    db.commit()   # Guardar cambios
+    cursor.close()  # Cerrar cursor
+
+    return jsonify({
+        "message": "Feedback de Snake enviado correctamente",
+        "data": {
+            "username": username,
+            "mensaje": mensaje,
+            "juego": "snake"
+        }
+    }), 201
+
+# API USERS
+@app.route('/api/users', methods=['GET'])
+def get_users():
+
+    return jsonify({
+        "message": "API users funcionando"
+    }), 200
+
+
+# API USERS MYSQL
+@app.route('/api/users/mysql', methods=['GET'])
+def get_users_mysql():
+
+    # Crear cursor SQL
+    cursor = db.cursor(dictionary=True)
+
+    # Query obtener usuarios
+    query = "SELECT id, username, email FROM usuarios"
+
+    cursor.execute(query)
+
+    users = cursor.fetchall()
+
+    cursor.close()
+
+    return jsonify({
+        "users": users
     }), 200
 
 

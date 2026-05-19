@@ -3,14 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    <link rel="icon" href="/static/logo_saguacate.png" type="image/png">
+    <link rel="stylesheet" href="/static/login.css">
 </head>
-<body>
-    <h2>Login</h2>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Iniciar sesión</button>
+<body>
+
+<div class="container">
+    
+    <!-- IZQUIERDA -->
+    <div class="left">
+        <div class="form">
+
+            <h1 class="titulo-principal">SAGUACATE</h1>
+            <h2>Login</h2>
+
+            <label>Usuario</label>
+            <input id="username" placeholder="Username">
+
+            <label>Contraseña</label>
+            <input id="password" type="password" placeholder="Password">
+
+            <button onclick="login()">Iniciar sesión</button>
+
+        </div>
+    </div>
+
+    <!-- DERECHA -->
+    <div class="right">
+        <img src="/static/logo.png" alt="imagen">
+    </div>
+
+</div>
 
 <script>
 function login() {
@@ -19,7 +44,12 @@ function login() {
         password: document.getElementById("password").value
     };
 
-    fetch("http://127.0.0.1:5000/login", {
+    if (!data.username || !data.password) {
+        alert("Rellena todos los campos");
+        return;
+    }
+
+    fetch("/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -28,17 +58,31 @@ function login() {
     })
     .then(res => res.json())
     .then(res => {
-        if (res.error) {
-            alert(res.error);
-        } else {
-            alert(res.message || "Login correcto");
-            window.location.href = "menu.html";
+
+        if (!res.message) {
+            alert("Error desconocido");
+            return;
         }
+
+        if (res.message.includes("incorrectos")) {
+            alert(res.message);
+            return;
+        }
+
+        // 🟢 GUARDAR USUARIO EN SESIÓN
+        localStorage.setItem("usuario", res.username || data.username);
+
+        alert("Login correcto");
+
+        // 🟢 IR AL MENÚ
+       window.location.replace("/menu");
     })
     .catch(err => {
         console.error(err);
+        alert("Error del servidor");
     });
 }
 </script>
+
 </body>
 </html>

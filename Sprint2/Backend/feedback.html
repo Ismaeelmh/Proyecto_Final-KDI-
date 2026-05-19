@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - Saguacate</title>
+    <link rel="stylesheet" href="feedback.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Feedback del juego</h1>
+
+    <p id="juegoNombre"></p>
+
+    <textarea id="comentario" placeholder="Escribe tu opinión..."></textarea>
+
+    <button onclick="enviarFeedback()">Enviar</button>
+    
+    <!-- 🔵 BOTÓN VOLVER -->
+    <button class="volver" onclick="volverMenu()">Volver al menú</button>
+
+</div>
+
+<script>
+
+const juego = localStorage.getItem("feedbackJuego");
+
+document.getElementById("juegoNombre").textContent = "Juego: " + juego;
+
+// enviar feedback
+function enviarFeedback() {
+
+    const texto = document.getElementById("comentario").value;
+    const usuario = localStorage.getItem("usuario");
+
+    if (!texto) {
+        alert("Escribe algo primero");
+        return;
+    }
+
+    fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            juego: juego,
+            comentario: texto,
+            usuario: usuario
+        })
+    })
+    .then(res => res.json())
+    .then(() => {
+        alert("Feedback enviado");
+        document.getElementById("comentario").value = "";
+    })
+    .catch(err => {
+        alert("Error al enviar feedback");
+        console.error(err);
+    });
+}
+
+// 🔵 volver al menú
+function volverMenu() {
+    window.location.href = "menu.html";
+}
+
+</script>
+
+</body>
+</html>
