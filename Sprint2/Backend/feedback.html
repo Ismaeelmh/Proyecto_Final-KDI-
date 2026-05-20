@@ -22,12 +22,7 @@
     <textarea id="comentario" placeholder="Escribe tu opinión..."></textarea>
 
     <button onclick="enviarFeedback()">Enviar</button>
-<<<<<<< HEAD
-
-    <button onclick="volverMenu()">Volver al menú</button>
-=======
     <button class="volver" onclick="volverMenu()">Volver al menú</button>
->>>>>>> da4e46eacb39b6ca2d38e4c9f950e6a16d94f6f1
 
 </div>
 
@@ -37,12 +32,6 @@
 const juego = localStorage.getItem("feedbackJuego");
 const usuario = localStorage.getItem("usuario");
 
-<<<<<<< HEAD
-// mostrar juego en pantalla
-document.getElementById("juegoNombre").textContent =
-    "Juego: " + (juego || "NO DEFINIDO");
-
-=======
 // mostrar juego
 document.getElementById("juegoNombre").textContent = "Juego: " + juego;
 
@@ -77,7 +66,6 @@ function cargarChat() {
 }
 
 // enviar mensaje
->>>>>>> da4e46eacb39b6ca2d38e4c9f950e6a16d94f6f1
 function enviarFeedback() {
 
     const texto = document.getElementById("comentario").value;
@@ -102,35 +90,6 @@ function enviarFeedback() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-<<<<<<< HEAD
-            username: usuario,
-            mensaje: texto,
-            juego: juego
-        })
-    })
-    .then(async res => {
-
-        const data = await res.json();
-
-        console.log("respuesta backend:", data);
-
-        if (!res.ok) {
-            alert(data.error || "Error del servidor");
-            return;
-        }
-
-        alert("Feedback enviado correctamente");
-
-        document.getElementById("comentario").value = "";
-
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Error de conexión con el servidor");
-    });
-}
-
-=======
             juego,
             comentario: texto,
             usuario
@@ -148,7 +107,6 @@ function enviarFeedback() {
 }
 
 // volver menú
->>>>>>> da4e46eacb39b6ca2d38e4c9f950e6a16d94f6f1
 function volverMenu() {
     window.location.href = "/menu";
 }

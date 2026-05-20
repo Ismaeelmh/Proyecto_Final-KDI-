@@ -3,61 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Menu de Juegos</title>
-    <link rel="stylesheet" href="menu.css">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='menu.css') }}">
 </head>
 
 <body>
 
-    <header>
-        <h1>Saguacate</h1>
+<header>
+    <h1>Saguacate</h1>
 
-        <button class="perfil" onclick="abrirPerfil()">
-            <span id="nombreUsuario"></span>
-        </button>
-    </header>
+    <button class="perfil" onclick="abrirPerfil()">
+        <span id="nombreUsuario"></span>
+    </button>
+</header>
 
-    <div class="games-container">
+<div class="games-container">
 
-        <div class="game" onclick="abrirSerpiente()">
-            <img src="cobra.png" alt="Serpiente">
-            <h2>Serpiente</h2>
-        </div>
-
-        <div class="game" onclick="abrirBuscaminas()">
-            <img src="buscaminas.jpg" alt="Buscaminas">
-            <h2>Buscaminas</h2>
-        </div>
-
+    <div class="game" onclick="abrirSerpiente()">
+        <img src="{{ url_for('static', filename='cobra.png') }}"
+             alt="Serpiente">
+        <h2>Serpiente</h2>
     </div>
 
-    <button class="logout" onclick="logout()">Cerrar sesión</button>
+    <div class="game" onclick="abrirBuscaminas()">
+        <img src="{{ url_for('static', filename='buscaminas.jpg') }}"
+             alt="Buscaminas">
+        <h2>Buscaminas</h2>
+    </div>
 
-<script>
+</div>
 
-//  Serpiente
+<button class="logout" onclick="logout()">Cerrar sesión</button>
+
+<script> 
+
+// Serpiente
 function abrirSerpiente() {
     window.location.href = "/Juegos/serpiente/build/web/index.html";
 }
 
-//  Buscaminas
+// Buscaminas
 function abrirBuscaminas() {
     window.location.href = "/Juegos/buscaminas/build/web/index.html";
 }
 
-//  Perfil
+// Perfil
 function abrirPerfil() {
     window.location.href = "perfil.html";
 }
 
-//  Logout
+// Logout
 function logout() {
     window.location.href = "login.html";
 }
 
-//  Mostrar usuario o fallback
+// Mostrar usuario o fallback
 document.addEventListener("DOMContentLoaded", function () {
-    const usuario = localStorage.getItem("usuario");
 
+    const usuario = localStorage.getItem("usuario");
     const nombre = document.getElementById("nombreUsuario");
 
     if (!usuario) {

@@ -1,3 +1,4 @@
+import re
 from flask import Flask, jsonify, redirect, render_template, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
@@ -21,6 +22,14 @@ db = mysql.connector.connect(
 
 print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 
+
+# Ruta para el Buscamians
+@app.route("/usuario")
+def obtener_usuario():
+    return jsonify({
+        "usuario_id": 1,
+        "nombre": "TEST"
+    })
 
 @app.route('/')
 def home():
@@ -100,8 +109,9 @@ def login():
     if not check_password_hash(user_found["password_hash"], password):
         return jsonify({"error": "Contraseña incorrecta"}), 401
 
-    # Save session
-    session["user"] = user_found["email"]
+    # Save session / Juegos
+    session["usuario_id"] = user_found["id"]
+    session["nombre"] = user_found["username"]
 
     return jsonify({
         "message": "Login correcto",
@@ -199,14 +209,20 @@ def menu():
 # SISTEMA DE FEEDBACK Por cada juego
 @app.route('/api/feedback', methods=['POST'])
 def feedback():
-
     data = request.get_json()
+
+    # check JSON body exists
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
 
     username = data.get("username")
     mensaje = data.get("mensaje")
     juego = data.get("juego")
 
-    # validaciones básicas
+    # allowed games
+    JUEGOS_VALIDOS = ["buscaminas", "serpiente"]
+
+    # validations
     if not username:
         return jsonify({"error": "Falta el username"}), 400
 
@@ -216,28 +232,35 @@ def feedback():
     if not juego:
         return jsonify({"error": "Falta el juego"}), 400
 
+    if juego not in JUEGOS_VALIDOS:
+        return jsonify({"error": "Juego inválido"}), 400
+
     if len(mensaje) < 3:
         return jsonify({"error": "Mensaje muy corto"}), 400
 
     if len(mensaje) > 500:
         return jsonify({"error": "Mensaje muy largo"}), 400
 
-    # guardar en MySQL
-    cursor = db.cursor()
+    # insert into MySQL
+    try:
+        cursor = db.cursor()
 
-    query = """
-    INSERT INTO feedback (username, mensaje, juego)
-    VALUES (%s, %s, %s)
-    """
+        query = """
+        INSERT INTO feedback (username, mensaje, juego)
+        VALUES (%s, %s, %s)
+        """
 
-    cursor.execute(query, (username, mensaje, juego))
+        cursor.execute(query, (username, mensaje, juego))
+        db.commit()
 
-    db.commit()
-    cursor.close()
+        return jsonify({"message": "Feedback enviado correctamente"}), 201
 
-    return jsonify({
-        "message": "Feedback enviado correctamente"
-    }), 201
+    except Exception as e:
+        db.rollback()
+        return jsonify({"error": "Error al guardar feedback"}), 500
+
+    finally:
+        cursor.close()
 
 # API USERS
 @app.route('/api/users', methods=['GET'])
@@ -270,4 +293,4 @@ def get_users_mysql():
 
 
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+   app.run(host="127.0.0.1", port=5000, debug=True)
