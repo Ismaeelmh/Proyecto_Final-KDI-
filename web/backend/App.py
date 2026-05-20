@@ -3,7 +3,7 @@ from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
 
-app = Flask("juegos")  # Crear aplicación Flask
+app = Flask(__name__, template_folder="../frontend", static_folder="../frontend") # Crear aplicación Flask
 CORS(app)  # Activar CORS
 
 

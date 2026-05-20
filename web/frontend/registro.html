@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="stylesheet" href="/static/registro.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='registro.css') }}">
 </head>
 
 <body>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="right">
-        <img src="/static/logo.png" alt="Logo empresa">
+        <img src="{{ url_for('static', filename='imagenes/logo.png') }}">
     </div>
 </div>
 <script>

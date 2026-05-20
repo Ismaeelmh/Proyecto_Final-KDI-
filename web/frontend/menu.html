@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saguacate</title>
+    <link rel="stylesheet" href="menu.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Saguacate</h1>
+
+        <button class="perfil" onclick="abrirPerfil()">
+            <span id="nombreUsuario"></span>
+        </button>
+    </header>
+
+    <div class="games-container">
+
+        <div class="game" onclick="abrirSerpiente()">
+            <img src="..\imagenes\cobra.png" alt="Serpiente">
+            <h2>Serpiente</h2>
+        </div>
+
+        <div class="game" onclick="abrirBuscaminas()">
+            <img src="..\imagenes\buscaminas.jpg" alt="Buscaminas">
+            <h2>Buscaminas</h2>
+        </div>
+
+    </div>
+
+    <!-- PANEL INFERIOR -->
+    <div class="bottom-panel">
+
+        <button onclick="abrirPerfil()">
+            👤 Perfil
+        </button>
+
+        <button onclick="abrirFeedback()">
+            💬 Feedback
+        </button>
+
+        <button onclick="logout()">
+            🚪 Cerrar sesión
+        </button>
+
+    </div>
+
+<script> 
+
+// Serpiente
+function abrirSerpiente() {
+    window.location.href = "/Juegos/serpiente/build/web/index.html";
+}
+
+// Buscaminas
+function abrirBuscaminas() {
+    window.location.href = "/Juegos/buscaminas/build/web/index.html";
+}
+
+// Perfil
+function abrirPerfil() {
+    window.location.href = "perfil.html";
+}
+
+// Feedback
+function abrirFeedback() {
+    window.location.href = "feedback.html";
+}
+
+// Logout
+function logout() {
+    window.location.href = "login.html";
+}
+
+// Mostrar usuario o fallback
+document.addEventListener("DOMContentLoaded", function () {
+
+    const usuario = localStorage.getItem("usuario");
+    const nombre = document.getElementById("nombreUsuario");
+
+    if (!usuario) {
+        nombre.textContent = "Perfil";
+        return;
+    }
+
+    nombre.textContent = usuario;
+});
+
+</script>
+
+</body>
+</html>
