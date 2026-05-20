@@ -2,8 +2,32 @@ import pygame
 import time
 import random
 import asyncio
+import requests
+
 
 pygame.init()
+
+
+
+session_requests = requests.Session()
+response = requests.get("http://127.0.0.1:5000/usuario")
+
+print("STATUS:", response.status_code)
+print("TEXT:", response.text)
+
+if response.status_code != 200:
+    print("Error: no login o sesión perdida")
+    exit()
+
+try:
+    data = response.json()
+except:
+    print("Respuesta no es JSON válido")
+    exit()
+usuario_id = data["usuario_id"]
+player_name = data["nombre"]
+
+
 
 # Configuración básica
 WIDTH = 680
@@ -107,7 +131,7 @@ def check_win():
 def draw_ui():
     pygame.draw.rect(screen, DARK_GRAY, (0, 0, WIDTH, TOP_BAR))
 
-    name_text = font.render("Jugador", True, WHITE)
+    name_text = font.render(player_name, True, WHITE)
     time_text = font.render(f"Tiempo: {elapsed_time}s", True, WHITE)
     score_text = font.render(f"Puntos: {score}", True, WHITE)
 

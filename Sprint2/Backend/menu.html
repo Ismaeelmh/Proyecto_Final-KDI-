@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,12 +37,12 @@
 
 //  Serpiente
 function abrirSerpiente() {
-    window.open("/Juegos/serpiente/build/web/index.html", "_blank");
+    window.location.href = "/Juegos/serpiente/build/web/index.html";
 }
 
 //  Buscaminas
 function abrirBuscaminas() {
-    window.open("/Juegos/buscaminas/build/web/index.html", "_blank");
+    window.location.href = "/Juegos/buscaminas/build/web/index.html";
 }
 
 //  Perfil
@@ -52,7 +52,6 @@ function abrirPerfil() {
 
 //  Logout
 function logout() {
-    localStorage.removeItem("usuario");
     window.location.href = "login.html";
 }
 
@@ -72,5 +71,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
-</body>
 </html>

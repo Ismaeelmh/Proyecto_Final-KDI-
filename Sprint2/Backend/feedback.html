@@ -28,7 +28,9 @@
 
 <script>
 
+// cargar juego desde localStorage
 const juego = localStorage.getItem("feedbackJuego");
+const usuario = localStorage.getItem("usuario");
 
 // mostrar juego
 document.getElementById("juegoNombre").textContent = "Juego: " + juego;
@@ -67,10 +69,18 @@ function cargarChat() {
 function enviarFeedback() {
 
     const texto = document.getElementById("comentario").value;
-    const usuario = localStorage.getItem("usuario");
+
+    console.log("usuario:", usuario);
+    console.log("juego:", juego);
+    console.log("mensaje:", texto);
 
     if (!texto) {
         alert("Escribe algo primero");
+        return;
+    }
+
+    if (!usuario || !juego) {
+        alert("Falta usuario o juego (localStorage vacío)");
         return;
     }
 
@@ -98,7 +108,7 @@ function enviarFeedback() {
 
 // volver menú
 function volverMenu() {
-    window.location.href = "menu.html";
+    window.location.href = "/menu";
 }
 
 // iniciar chat
