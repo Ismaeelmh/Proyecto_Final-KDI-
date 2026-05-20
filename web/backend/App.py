@@ -1,10 +1,9 @@
-import re
 from flask import Flask, jsonify, redirect, render_template, request, session  # Importar Flask y utilidades JSON
 from flask_cors import CORS  # Permitir conexión con frontend
 from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
 import mysql.connector  # Importar conector MySQL
 
-app = Flask("juegos")  # Crear aplicación Flask
+app = Flask(__name__, template_folder="../frontend", static_folder="../frontend") # Crear aplicación Flask
 CORS(app)  # Activar CORS
 
 
@@ -21,15 +20,6 @@ db = mysql.connector.connect(
 )
 
 print("Conexión MySQL AWS exitosa")  # Confirmar conexión
-
-
-# Ruta para el Buscamians
-@app.route("/usuario")
-def obtener_usuario():
-    return jsonify({
-        "usuario_id": 1,
-        "nombre": "TEST"
-    })
 
 @app.route('/')
 def home():
@@ -293,4 +283,4 @@ def get_users_mysql():
 
 
 if __name__ == '__main__':
-   app.run(host="127.0.0.1", port=5000, debug=True)
+   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
