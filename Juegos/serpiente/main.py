@@ -230,6 +230,7 @@ async def main(modo):
                         puntuacion = 0
                         return True
                     if bt_salir.collidepoint(mouse_pos):
+                        window.location.href = "../../../../web/frontend/menu.html"
                         return False
             
             bt_reintentar = pygame.draw.rect(pantalla, COLOR2, ((ANCHO // 2) - 300, (ALTO // 2) - 40, 600, 100))
