@@ -1,0 +1,154 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+/* CONTENEDOR */
+.container {
+
+    width: 90%;
+    max-width: 450px;
+
+    padding: 35px;
+
+    background: rgba(0,0,0,0.4);
+
+    border: 1px solid rgba(135,206,250,0.2);
+    border-radius: 24px;
+
+    text-align: center;
+
+    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* TITULO */
+h1 {
+
+    color: #87cefa;
+
+    font-size: 2.8rem;
+
+    margin-bottom: 20px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 3px;
+
+    text-shadow: 0 0 20px rgba(135,206,250,0.6);
+}
+
+/* AVATAR */
+.avatar img {
+
+    width: 120px;
+    height: 120px;
+
+    border-radius: 50%;
+
+    border: 2px solid #87cefa;
+
+    margin-bottom: 15px;
+}
+
+/* INFO */
+.info {
+
+    text-align: left;
+
+    margin-bottom: 20px;
+}
+
+.info p {
+
+    margin: 10px 0;
+
+    color: #cfe8ff;
+}
+
+/* PASSWORD BOX */
+.password-box {
+
+    margin-top: 15px;
+}
+
+.password-box h3 {
+
+    color: #87cefa;
+
+    margin-bottom: 10px;
+}
+
+/* INPUTS */
+input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin: 6px 0;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(135,206,250,0.3);
+
+    background: #1a1a1a;
+
+    color: white;
+
+    outline: none;
+}
+
+input:focus {
+    border-color: #87cefa;
+}
+
+/* BOTONES */
+button {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border-radius: 12px;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    background: #87cefa;
+
+    color: black;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+/* VOLVER */
+.volver {
+
+    background: transparent;
+
+    border: 1px solid #87cefa;
+
+    color: #87cefa;
+}
+
+.volver:hover {
+    background: rgba(135,206,250,0.1);
+}

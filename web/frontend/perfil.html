@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Saguacate</title>
+
+    <link rel="stylesheet" href="perfil.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Perfil</h1>
+
+    <!-- AVATAR -->
+    <div class="avatar">
+        <img id="avatar" src="default-avatar.png" alt="avatar">
+    </div>
+
+    <!-- INFO -->
+    <div class="info">
+
+        <p><b>Nombre:</b> <span id="nombre"></span></p>
+
+        <p><b>Correo:</b> <span id="correo"></span></p>
+
+        <p><b>🍎 Máx manzanas en Serpiente:</b> <span id="maxManzanas">0</span></p>
+
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="password-box">
+
+        <h3>Cambiar contraseña</h3>
+
+        <input type="password" id="oldPass" placeholder="Contraseña actual">
+        <input type="password" id="newPass" placeholder="Nueva contraseña">
+
+        <button onclick="cambiarPassword()">Actualizar contraseña</button>
+
+        <p id="estado"></p>
+
+    </div>
+
+    <button class="volver" onclick="volverMenu()">
+        Volver al menú
+    </button>
+
+</div>
+
+<script>
+
+// =====================
+// CARGAR PERFIL
+// =====================
+document.addEventListener("DOMContentLoaded", () => {
+
+    const usuario = localStorage.getItem("usuario");
+    const email = localStorage.getItem("email");
+
+    document.getElementById("nombre").textContent =
+        usuario || "No logueado";
+
+    document.getElementById("correo").textContent =
+        email || "No disponible";
+
+    document.getElementById("avatar").src = "default-avatar.png";
+
+    if (usuario) {
+
+        fetch("/api/serpiente/max/" + usuario)
+            .then(res => res.json())
+            .then(data => {
+
+                document.getElementById("maxManzanas").textContent =
+                    data.max || 0;
+
+            })
+            .catch(() => {
+                document.getElementById("maxManzanas").textContent = 0;
+            });
+
+    }
+
+});
+
+
+// =====================
+// CAMBIAR CONTRASEÑA
+// =====================
+function cambiarPassword() {
+
+    const oldPass = document.getElementById("oldPass").value;
+    const newPass = document.getElementById("newPass").value;
+    const usuario = localStorage.getItem("usuario");
+
+    const estado = document.getElementById("estado");
+
+    if (!oldPass || !newPass) {
+        estado.textContent = "Rellena todos los campos";
+        return;
+    }
+
+    fetch("/api/users/change-password", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: usuario,
+            oldPassword: oldPass,
+            newPassword: newPass
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.error) {
+            estado.textContent = "❌ " + data.error;
+        } else {
+            estado.textContent = "✅ Contraseña actualizada";
+        }
+
+    })
+    .catch(() => {
+        estado.textContent = "❌ Error del servidor";
+    });
+
+}
+
+
+// =====================
+// VOLVER
+// =====================
+function volverMenu() {
+    window.location.href = "menu.html";
+}
+
+</script>
+
+</body>
+</html>
