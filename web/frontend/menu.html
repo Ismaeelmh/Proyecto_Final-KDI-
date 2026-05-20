@@ -20,45 +20,65 @@
     <div class="games-container">
 
         <div class="game" onclick="abrirSerpiente()">
-            <img src="cobra.png" alt="Serpiente">
+            <img src="..\imagenes\cobra.png" alt="Serpiente">
             <h2>Serpiente</h2>
         </div>
 
         <div class="game" onclick="abrirBuscaminas()">
-            <img src="buscaminas.jpg" alt="Buscaminas">
+            <img src="..\imagenes\buscaminas.jpg" alt="Buscaminas">
             <h2>Buscaminas</h2>
         </div>
 
     </div>
 
-    <button class="logout" onclick="logout()">Cerrar sesión</button>
+    <!-- PANEL INFERIOR -->
+    <div class="bottom-panel">
+
+        <button onclick="abrirPerfil()">
+            👤 Perfil
+        </button>
+
+        <button onclick="abrirFeedback()">
+            💬 Feedback
+        </button>
+
+        <button onclick="logout()">
+            🚪 Cerrar sesión
+        </button>
+
+    </div>
 
 <script> 
 
-//  Serpiente
+// Serpiente
 function abrirSerpiente() {
     window.location.href = "/Juegos/serpiente/build/web/index.html";
 }
 
-//  Buscaminas
+// Buscaminas
 function abrirBuscaminas() {
     window.location.href = "/Juegos/buscaminas/build/web/index.html";
 }
 
-//  Perfil
+// Perfil
 function abrirPerfil() {
     window.location.href = "perfil.html";
 }
 
-//  Logout
+// Feedback
+function abrirFeedback() {
+    window.location.href = "feedback.html";
+}
+
+// Logout
 function logout() {
     window.location.href = "login.html";
 }
 
-//  Mostrar usuario o fallback
+// Mostrar usuario o fallback
 document.addEventListener("DOMContentLoaded", function () {
-    const usuario = localStorage.getItem("usuario");
 
+    const usuario = localStorage.getItem("usuario");
     const nombre = document.getElementById("nombreUsuario");
 
     if (!usuario) {
@@ -71,4 +91,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
+</body>
 </html>
