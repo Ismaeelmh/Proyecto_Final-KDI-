@@ -279,4 +279,3 @@ async def main():
     pygame.quit()
 
 
-asyncio.run(main())
