@@ -3,197 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feedback - Saguacate</title>
-
-    <link rel="stylesheet" href="feedback.css">
+    <title>Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='feedback.css') }}"> 
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}" type="image/png">
 </head>
 
 <body>
 
 <div class="container">
 
-    <h1>Feedback del juego</h1>
+    <h1>Feedback</h1>
 
     <p id="juegoNombre"></p>
 
-    <!-- CHAT -->
     <div id="chatBox"></div>
 
-    <!-- INPUT -->
-    <textarea
-        id="comentario"
-        placeholder="Escribe tu opinión..."
-        maxlength="500"
-    ></textarea>
+    <textarea id="comentario" placeholder="Escribe algo..."></textarea>
 
-    <button onclick="enviarFeedback()">
-        Enviar
-    </button>
-
-    <button class="volver" onclick="volverMenu()">
-        Volver al menú
-    </button>
+    <button onclick="enviarFeedback()">Enviar</button>
+    <button onclick="volverMenu()">Volver</button>
 
 </div>
 
 <script>
 
-// cargar juego desde localStorage
-const juego = localStorage.getItem("feedbackJuego");
+// =====================
+// DATOS
+// =====================
 const usuario = localStorage.getItem("usuario");
-
-// mostrar juego
-document.getElementById("juegoNombre").textContent =
-    "Juego: " + juego;
+const juego = localStorage.getItem("feedbackJuego");
 
 
+// =====================
 // CARGAR CHAT
+// =====================
 function cargarChat() {
 
+    if (!juego) return;
+
     fetch("/api/feedback/" + juego)
+        .then(res => res.json())
+        .then(data => {
 
-    .then(res => res.json())
+            const chat = document.getElementById("chatBox");
+            chat.innerHTML = "";
 
-    .then(data => {
+            data.forEach(m => {
 
-        const chat = document.getElementById("chatBox");
+                chat.innerHTML += `
+                    <div class="mensaje">
+                        <b>${m.username}</b>
+                        <p>${m.mensaje}</p>
+                    </div>
+                `;
 
-        chat.innerHTML = "";
+            });
 
-        data.forEach(msg => {
-
-            const div = document.createElement("div");
-
-            div.classList.add("mensaje");
-
-            div.innerHTML = `
-                <b>${msg.username}</b>
-                <p>${msg.mensaje}</p>
-                <small>${msg.fecha}</small>
-            `;
-
-            chat.appendChild(div);
-
-        });
-
-        chat.scrollTop = chat.scrollHeight;
-
-    })
-
-    .catch(err => {
-
-        console.error("Error cargando chat:", err);
-
-    });
+        })
+        .catch(() => {});
 
 }
 
 
+// =====================
 // ENVIAR FEEDBACK
-function enviarFeedback() {
+// =====================
+async function enviarFeedback() {
 
     const texto = document.getElementById("comentario").value.trim();
 
-    console.log("usuario:", usuario);
-    console.log("juego:", juego);
-    console.log("mensaje:", texto);
-
-    // validaciones
-    if (!texto) {
-
-        alert("Escribe algo primero");
-        return;
-
-    }
-
-    if (texto.length < 3) {
-
-        alert("Mensaje demasiado corto");
-        return;
-
-    }
-
-    if (texto.length > 500) {
-
-        alert("Mensaje demasiado largo");
-        return;
-
-    }
+    if (!texto) return;
 
     if (!usuario || !juego) {
-
         alert("Falta usuario o juego");
         return;
+    }
+
+    try {
+
+        const res = await fetch("/api/feedback", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: usuario,
+                mensaje: texto,
+                juego: juego
+            })
+        });
+
+        const text = await res.text();
+
+        console.log("RESPUESTA:", text);
+
+        if (!res.ok) {
+            alert("Error: " + text);
+            return;
+        }
+
+        document.getElementById("comentario").value = "";
+        cargarChat();
+
+    } catch (err) {
+
+        console.error(err);
+        alert("Error del servidor");
 
     }
 
-    // POST API
-    fetch("/api/feedback", {
-
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-            username: usuario,
-            mensaje: texto,
-            juego: juego
-
-        })
-
-    })
-
-    .then(async res => {
-
-        const data = await res.json();
-
-        if (!res.ok) {
-
-            throw new Error(data.error || "Error");
-
-        }
-
-        return data;
-
-    })
-
-    .then(data => {
-
-        console.log(data);
-
-        document.getElementById("comentario").value = "";
-
-        cargarChat();
-
-    })
-
-    .catch(err => {
-
-        console.error(err);
-
-        alert(err.message);
-
-    });
-
 }
 
 
-// VOLVER AL MENÚ
+// =====================
+// VOLVER
+// =====================
 function volverMenu() {
-
     window.location.href = "/menu";
-
 }
 
 
-// iniciar chat
+// =====================
+// INICIO
+// =====================
 cargarChat();
-
-
-// auto actualización
 setInterval(cargarChat, 2000);
 
 </script>

@@ -2,31 +2,25 @@ import pygame
 import time
 import random
 import asyncio
-import requests
 
 
 pygame.init()
 
-
-
-session_requests = requests.Session()
-response = requests.get("http://127.0.0.1:5000/usuario")
-
-print("STATUS:", response.status_code)
-print("TEXT:", response.text)
-
-if response.status_code != 200:
-    print("Error: no login o sesión perdida")
-    exit()
-
 try:
-    data = response.json()
+    from platform import window
+    url = window.location.search
 except:
-    print("Respuesta no es JSON válido")
-    exit()
-usuario_id = data["usuario_id"]
-player_name = data["nombre"]
+    url = ""
 
+usuario_id = 1
+player_name = "Jugador"
+
+if "nombre=" in url:
+    for param in url.lstrip("?").split("&"):
+        if param.startswith("nombre="):
+            player_name = param.split("=")[1].replace("%20", " ")
+        if param.startswith("id="):
+            usuario_id = int(param.split("=")[1])
 
 
 # Configuración básica
@@ -217,9 +211,14 @@ async def main():
                     if reinciar_botton.collidepoint(mouse_pos):
                         reset_game()
 
-                    if salir_botton.collidepoint(mouse_pos):
-                        running = False
-
+                if salir_botton.collidepoint(mouse_pos):
+                    running = False
+                    try:
+                        from platform import window
+                        window.location.href = "/menu"
+                    except:
+                        pass
+                    
                 if not game_over:
 
                     if event.button == 1:
@@ -275,7 +274,5 @@ async def main():
 
         pygame.display.update()
         await asyncio.sleep(0)
-
     pygame.quit()
-
-
+asyncio.run(main())

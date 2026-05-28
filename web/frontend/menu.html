@@ -4,89 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saguacate</title>
-    <link rel="stylesheet" href="menu.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}" type="image/png">
 </head>
 
 <body>
 
-    <header>
-        <h1>Saguacate</h1>
+<header>
+    <h1>Saguacate</h1>
 
-        <button class="perfil" onclick="abrirPerfil()">
-            <span id="nombreUsuario"></span>
-        </button>
-    </header>
+    <button class="perfil" onclick="abrirPerfil()">
+        <span id="nombreUsuario"></span>
+    </button>
+</header>
 
-    <div class="games-container">
+<div class="games-container">
+
+    <!-- SERPIENTE -->
+    <div class="game-column">
 
         <div class="game" onclick="abrirSerpiente()">
-            <img src="..\imagenes\cobra.png" alt="Serpiente">
+            <img src="{{ url_for('static', filename='imagenes/cobra.png') }}" alt="Serpiente">
             <h2>Serpiente</h2>
         </div>
 
-        <div class="game" onclick="abrirBuscaminas()">
-            <img src="..\imagenes\buscaminas.jpg" alt="Buscaminas">
-            <h2>Buscaminas</h2>
+        <div class="snake-buttons">
+
+            <button class="play-btn" onclick="abrirSerpiente(event)">
+                Jugar solo
+            </button>
+
+            <button class="multi-btn" onclick="abrirSerpienteMulti(event)">
+                Multijugador
+            </button>
+
         </div>
 
     </div>
 
-    <!-- PANEL INFERIOR -->
-    <div class="bottom-panel">
+    <!-- BUSCAMINAS -->
+    <div class="game-column">
 
-        <button onclick="abrirPerfil()">
-             Perfil
-        </button>
+        <div class="game" onclick="abrirBuscaminas()">
+            <img src="{{ url_for('static', filename='imagenes/buscaminas.jpg') }}" alt="Buscaminas">
+            <h2>Buscaminas</h2>
+        </div>
 
-        <button onclick="abrirFeedback()">
-             Feedback
-        </button>
-
-        <button onclick="logout()">
-             Cerrar sesión
+        <button class="play-btn" onclick="abrirBuscaminas()">
+            Jugar
         </button>
 
     </div>
 
-<script> 
+</div>
 
-// Serpiente
-function abrirSerpiente() {
-    window.location.href = "/Juegos/serpiente/build/web/index.html";
+<!-- PANEL INFERIOR -->
+<div class="bottom-panel">
+
+    <button onclick="abrirPerfil()">Perfil</button>
+    <button onclick="abrirFeedback('serpiente')">Feedback Serpiente</button>
+    <button onclick="abrirFeedback('buscaminas')">Feedback Buscaminas</button>
+    <button onclick="abrirRankings()">Rankings</button>
+    <button onclick="logout()">Cerrar sesión</button>
+
+</div>
+
+<script>
+
+// SERPIENTE SOLO
+function abrirSerpiente(e) {
+    if (e) e.stopPropagation();
+    window.location.href = "/Juegos/serpiente/build/web/index.html?modo=1";
 }
 
-// Buscaminas
+// SERPIENTE MULTI
+function abrirSerpienteMulti(e) {
+    if (e) e.stopPropagation();
+    window.location.href = "/Juegos/serpiente/build/web/index.html?modo=2";
+}
+
+// BUSCAMINAS
 function abrirBuscaminas() {
     window.location.href = "/Juegos/buscaminas/build/web/index.html";
 }
 
-// Perfil
+// PERFIL
 function abrirPerfil() {
-    window.location.href = "perfil.html";
+    window.location.href = "/perfil";
 }
 
-// Feedback
-function abrirFeedback() {
-    window.location.href = "feedback.html";
+// FEEDBACK (IMPORTANT FIX)
+function abrirFeedback(juego) {
+    localStorage.setItem("feedbackJuego", juego);
+    window.location.href = "/feedback";
 }
 
-// Logout
+// RANKINGS
+function abrirRankings() {
+    window.location.href = "/rankings";
+}
+
+// LOGOUT
 function logout() {
-    window.location.href = "login.html";
+    window.location.href = "/login";
 }
 
-// Mostrar usuario o fallback
+// USER NAME
 document.addEventListener("DOMContentLoaded", function () {
-
     const usuario = localStorage.getItem("usuario");
-    const nombre = document.getElementById("nombreUsuario");
 
-    if (!usuario) {
-        nombre.textContent = "Perfil";
-        return;
-    }
-
-    nombre.textContent = usuario;
+    document.getElementById("nombreUsuario").textContent =
+        usuario ? usuario : "Perfil";
 });
 
 </script>
