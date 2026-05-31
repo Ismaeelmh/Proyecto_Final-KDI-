@@ -340,7 +340,33 @@ def get_users_mysql():
     return jsonify({
         "users": users
     }), 200
-
+@app.route('/api/rankings', methods=['GET'])
+def get_rankings():
+    cursor = db.cursor(dictionary=True)
+    
+    # Máximo de serpiente
+    cursor.execute("""
+        SELECT MAX(puntuacion) as record 
+        FROM detalles_partida 
+        WHERE juego = 'serpiente'
+    """)
+    serpiente = cursor.fetchone()
+    
+    # Total de buscaminas
+    cursor.execute("""
+        SELECT SUM(puntuacion) as total 
+        FROM detalles_partida 
+        WHERE juego = 'buscaminas'
+    """)
+    buscaminas = cursor.fetchone()
+    
+    cursor.close()
+    
+    return jsonify({
+        "serpiente_record": serpiente["record"] or 0,
+        "buscaminas_total": buscaminas["total"] or 0
+    }), 200
+    
 @app.route("/usuario")
 def obtener_usuario():
     if "usuario_id" not in session:
@@ -353,15 +379,21 @@ def obtener_usuario():
     
 @app.route("/guardar_puntuacion", methods=["POST"])
 def guardar_puntuacion():
+
+    print("ENTRO A GUARDAR_PUNTUACION")
+
     try:
         datos = request.get_json()
+
+        print("DATOS RECIBIDOS:", datos)
 
         usuario_id = datos.get("usuario_id")
         juego = datos.get("juego")
         modo = datos.get("modo")
         puntuacion = datos.get("puntuacion")
 
-        if not all([usuario_id, juego, modo, puntuacion]):
+        # VALIDACION CORRECTA
+        if usuario_id is None or juego is None or modo is None or puntuacion is None:
             return jsonify({"error": "Faltan datos"}), 400
 
         cursor = db.cursor()
@@ -373,14 +405,15 @@ def guardar_puntuacion():
 
         cursor.execute(query, (usuario_id, juego, modo, puntuacion))
         db.commit()
+
+        print("PUNTUACION GUARDADA")
+
         cursor.close()
 
         return jsonify({"ok": True}), 200
 
     except Exception as e:
-        print("Error:", e)
+        print("ERROR MYSQL:", e)
         return jsonify({"error": "server error"}), 500
-
-
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
