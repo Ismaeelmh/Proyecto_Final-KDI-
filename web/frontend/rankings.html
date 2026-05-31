@@ -1,60 +1,60 @@
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rankings</title>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rankings</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='rankings.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}">
-    </head>
+<link rel="stylesheet" href="{{ url_for('static', filename='rankings.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}">
+</head>
 
-    <body>
+<body>
 
-    <header>
-        <h1> Rankings</h1>
-        <button class="volver" onclick="volverMenu()">Volver al menú</button>
-    </header>
+<header>
+    <h1> Rankings</h1>
+    <button class="volver" onclick="volverMenu()">Volver al menú</button>
+</header>
 
-    <div class="container">
+<div class="container">
 
-        <!-- SERPIENTE -->
-        <div class="card">
-            <h2> Serpiente</h2>
+    <!-- SERPIENTE -->
+    <div class="card">
+        <h2> Serpiente</h2>
 
-            <div class="player">
-                <span>Récord máximo</span>
-                <span id="recordSerpiente">0</span>
-            </div>
+        <div class="player">
+            <span>Récord máximo</span>
+            <span id="recordSerpiente">0</span>
         </div>
-
-        <!-- BUSCAMINAS -->
-        <div class="card">
-            <h2> Buscaminas</h2>
-
-            <div class="player">
-                <span>Puntos totales</span>
-                <span id="totalBuscaminas">0</span>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        
-    function volverMenu() {
-        window.location.href = "/menu";
-    }
+    <!-- BUSCAMINAS -->
+    <div class="card">
+        <h2> Buscaminas</h2>
 
-    fetch("/api/rankings")
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("recordSerpiente").textContent = data.serpiente_record;
-            document.getElementById("totalBuscaminas").textContent = data.buscaminas_total;
-        })
-        .catch(err => console.error("Error:", err));
+        <div class="player">
+            <span>Puntos totales</span>
+            <span id="totalBuscaminas">0</span>
+        </div>
+    </div>
 
-    </script>
+</div>
 
-    </body>
-    </html>
+<script>
+    
+function volverMenu() {
+    window.location.href = "/menu";
+}
+
+fetch("/api/rankings")
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("recordSerpiente").textContent = data.serpiente_record;
+        document.getElementById("totalBuscaminas").textContent = data.buscaminas_total;
+    })
+    .catch(err => console.error("Error:", err));
+
+</script>
+
+</body>
+</html>

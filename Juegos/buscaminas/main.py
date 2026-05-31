@@ -14,12 +14,8 @@ except:
     url = ""
 
 usuario_id = 1
-player_name = "Jugador"
-
-if "nombre=" in url:
+if "id=" in url:
     for param in url.lstrip("?").split("&"):
-        if param.startswith("nombre="):
-            player_name = param.split("=")[1].replace("%20", " ")
         if param.startswith("id="):
             usuario_id = int(param.split("=")[1])
 
@@ -42,8 +38,8 @@ font = pygame.font.SysFont("Arial", 25)
 button_font = pygame.font.SysFont("Arial", 25)
 result_font = pygame.font.SysFont("Arial", 28)
 
-reinciar_botton = pygame.Rect(370, 8, 110, 35)
-salir_botton = pygame.Rect(490, 8, 80, 35)
+reinciar_botton = pygame.Rect(250, 8, 120, 35)
+salir_botton = pygame.Rect(400, 8, 80, 35)
 
 score = 0
 start_time = time.time()
@@ -104,12 +100,11 @@ def check_win():
 
 def draw_ui():
     pygame.draw.rect(screen, DARK_GRAY, (0, 0, WIDTH, TOP_BAR))
-    name_text = font.render(player_name, True, WHITE)
     time_text = font.render(f"Tiempo: {elapsed_time}s", True, WHITE)
     score_text = font.render(f"Puntos: {score}", True, WHITE)
-    screen.blit(name_text, (6, 10))
-    screen.blit(time_text, (200, 10))
-    screen.blit(score_text, (250, 10))
+    screen.blit(time_text, (80, 10))
+    score_rect = score_text.get_rect()
+    screen.blit(score_text, (WIDTH - score_rect.width - 10, 10))
     pygame.draw.rect(screen, DARK_GRAY, (0, HEIGHT - BOTTOM_BAR, WIDTH, BOTTOM_BAR))
     result_text = result_font.render(result_text_value, True, WHITE)
     rect = result_text.get_rect(center=(WIDTH // 2, HEIGHT - 25))
@@ -119,8 +114,19 @@ def draw_ui():
         pygame.draw.rect(screen, HIGHLIGHT, salir_botton, border_radius=6)
         pygame.draw.rect(screen, BLACK, reinciar_botton, 2, border_radius=6)
         pygame.draw.rect(screen, BLACK, salir_botton, 2, border_radius=6)
-        screen.blit(button_font.render("Reiniciar", True, WHITE), (478, 15))
-        screen.blit(button_font.render("Salir", True, WHITE), (605, 15))
+        reiniciar_text = button_font.render("Reiniciar", True, WHITE)
+        salir_text = button_font.render("Salir", True, WHITE)
+
+        screen.blit(
+            reiniciar_text,
+            reiniciar_text.get_rect(center=reinciar_botton.center)
+        )
+
+        screen.blit(
+            salir_text,
+            salir_text.get_rect(center=salir_botton.center)
+        )
+
 
 def draw_grid():
     for row in range(ROWS):
