@@ -1,16 +1,18 @@
-from flask import Flask, jsonify, redirect, render_template, request, session, send_from_directory, send_file  # Importar Flask y utilidades JSON
-from flask_cors import CORS  # Permitir conexión con frontend
-from werkzeug.security import generate_password_hash, check_password_hash  # Encriptar y verificar contraseñas
-import mysql.connector  # Importar conector MySQL
-import os
-app = Flask(__name__, template_folder="../frontend", static_folder="../frontend") # Crear aplicación Flask
-CORS(app)  # Activar CORS
+# Importar Flask y las funciones necesarias para crear rutas,
+# devolver respuestas JSON, gestionar sesiones y enviar archivos
+from flask import Flask, jsonify, redirect, render_template, request, session, send_from_directory, send_file
+from flask_cors import CORS  # Permitir la comunicación entre frontend y backend
+from werkzeug.security import generate_password_hash, check_password_hash # Funciones para cifrar contraseñas y verificarlas durante el login
+import mysql.connector # Conector para comunicarse con MySQL
+import os # Librería para trabajar con rutas y archivos del sistema
 
+# Crear la aplicación Flask e indicar dónde están los archivos HTML
+app = Flask(__name__, template_folder="../frontend", static_folder="../frontend")
 
-app.secret_key = "saguacate" # Clave secreta para sesiones
+CORS(app) # Habilitar CORS para aceptar peticiones desde el frontend
+app.secret_key = "saguacate" # Clave secreta utilizada para almacenar sesiones de usuario
 
-
-# Conexión con MySQL en servidor EC2
+# Conexión con la base de datos MySQL alojada en AWS EC2
 db = mysql.connector.connect(
     host="3.234.171.83",
     user="visualcode",
@@ -21,37 +23,51 @@ db = mysql.connector.connect(
 
 print("Conexión MySQL AWS exitosa")  # Confirmar conexión
 
+# Obtener la ruta actual del proyecto
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-JUEGOS_DIR = os.path.join(BASE_DIR, "..", "..", "Juegos")
 
+JUEGOS_DIR = os.path.join(BASE_DIR, "..", "..", "Juegos") # Ruta donde se encuentran los juegos
+
+# Ruta para servir archivos de los juegos al navegador
 @app.route('/Juegos/<path:filename>')
 def juegos(filename):
-    import mimetypes
-    base_dir = "/home/ubuntu/Proyecto_Final-KDI-/Juegos"
+
+    import mimetypes # Detectar automáticamente el tipo de archivo
+    base_dir = "/home/ubuntu/Proyecto_Final-KDI-/Juegos"# Directorio donde están almacenados los juegos
+
+    # Construir la ruta completa del archivo solicitado
     full_path = os.path.join(base_dir, filename)
 
+    # Comprobar si el archivo existe
     if not os.path.exists(full_path):
         return f"File not found: {filename}", 404
 
+    # Obtener el tipo MIME del archivo
     mime_type, _ = mimetypes.guess_type(full_path)
+
+    # Si no se reconoce el tipo, usar uno genérico
     if not mime_type:
         mime_type = 'application/octet-stream'
 
+    # Enviar el archivo al navegador
     response = send_file(full_path, mimetype=mime_type)
 
+    # Configurar cabeceras necesarias para ejecutar juegos WebAssembly
     response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
     response.headers['Cross-Origin-Embedder-Policy'] = 'credentialless'
     response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'
+
+    # Evitar que el navegador almacene versiones antiguas en caché
     response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '0'
 
     return response
 
-
+# Ruta principal del sitio
 @app.route('/')
 def home():
-    return render_template('registro.html') # Ruta principal
+    return render_template('registro.html') 
 
 # FRONTEND ROUTES (HTML)
 @app.route('/login')
@@ -73,7 +89,6 @@ def perfil_page():
 @app.route('/feedback')
 def feedback_page():
     return render_template('feedback.html')
-
 
 @app.route('/rankings')
 def rankings_page():
@@ -135,7 +150,7 @@ def login():
     if not user_found:
         return jsonify({"error": "Usuario no existe"}), 401
 
-    # Wrong password
+    # contreseña mal 
     if not check_password_hash(user_found["password_hash"], password):
         return jsonify({"error": "Contraseña incorrecta"}), 401
 
@@ -416,4 +431,4 @@ def guardar_puntuacion():
         print("ERROR MYSQL:", e)
         return jsonify({"error": "server error"}), 500
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=
