@@ -431,4 +431,4 @@ def guardar_puntuacion():
         print("ERROR MYSQL:", e)
         return jsonify({"error": "server error"}), 500
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=
+   app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
