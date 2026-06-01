@@ -430,5 +430,57 @@ def guardar_puntuacion():
     except Exception as e:
         print("ERROR MYSQL:", e)
         return jsonify({"error": "server error"}), 500
+
+@app.route('/api/users/change-password', methods=['POST'])
+def change_password():
+
+    data = request.get_json()
+
+    username = data.get("username")
+    old_password = data.get("oldPassword")
+    new_password = data.get("newPassword")
+
+    if not username or not old_password or not new_password:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    cursor = db.cursor(dictionary=True)
+
+    query = """
+    SELECT password_hash
+    FROM usuarios
+    WHERE username = %s
+    """
+
+    cursor.execute(query, (username,))
+    user = cursor.fetchone()
+
+    if not user:
+        cursor.close()
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    if not check_password_hash(
+        user["password_hash"],
+        old_password
+    ):
+        cursor.close()
+        return jsonify({"error": "Contraseña actual incorrecta"}), 401
+
+    new_hash = generate_password_hash(new_password)
+
+    query = """
+    UPDATE usuarios
+    SET password_hash = %s
+    WHERE username = %s
+    """
+
+    cursor.execute(query, (new_hash, username))
+    db.commit()
+
+    cursor.close()
+
+    return jsonify({
+        "message": "Contraseña actualizada correctamente"
+    }), 200
+
 if __name__ == '__main__':
    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
